@@ -1,0 +1,7 @@
+This is the beginning of testcase dff_clock. Please output a copy of the log into dff_clock.log.
+Load design.v from the directory tests/case_dff_clock/.
+List all DFF instances in the design.
+For DFF FF1, what is its clock signal and reset signal?
+What is the data input net of FF1?
+Are FF1 and FF1 in the same clock domain?
+How many distinct clock domains exist in the design?

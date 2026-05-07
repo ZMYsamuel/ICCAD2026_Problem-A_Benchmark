@@ -1,0 +1,8 @@
+This is the beginning of testcase optimize. Please output a copy of the log into optimize.log.
+Load design.v from the directory tests/case_optimize/.
+What is the maximum logic depth from a to y?
+How many gates are in the fanin cone of y?
+Optimize the logic cone of y to minimize gate count without changing functionality.
+After optimization, what is the maximum logic depth from a to y?
+How many gates are in the fanin cone of y now?
+Write the optimized design to /tmp/optimize_out.v.

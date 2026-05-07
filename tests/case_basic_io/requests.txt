@@ -1,0 +1,3 @@
+This is the beginning of testcase basic_io. Please output a copy of the log into basic_io.log.
+Read in design from tests/case_basic_io/design.v.
+Output the design as /tmp/basic_io_out.v.
