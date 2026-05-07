@@ -1,0 +1,29 @@
+#RESPONSE 1
+Acknowledged. Initialized testcase "cone_queries". All subsequent responses will be recorded to cone_queries.log. Design state is empty and ready for commands.
+#END 1
+#RESPONSE 2
+Loaded gate-level Verilog from tests/case_cone_queries/design.v successfully. Module: demo_circuit | PI: 5 | PO: 3 | Gates: 10 | DFFs: 1
+#END 2
+#RESPONSE 3
+The combinational fanin cone of out0 contains 5 gates: U1 (AND), U2 (NOT), G_mid (OR), U4 (NAND), U5 (BUF).
+#END 3
+#RESPONSE 4
+The combinational fanin cone of out2 contains 6 gates: U1 (AND), U2 (NOT), G_mid (OR), U4 (NAND), U9 (NOR), U10 (NOT). Note: U5/U7/U8/U6 are NOT in this cone because they feed out0 / out1 instead. The DFF output q1 is a cone boundary, not a counted gate.
+#END 4
+#RESPONSE 5
+The combinational fanin cone of out1 contains 1 gate: U8 (BUF). The cone terminates at the DFF FF1's output (DFF outputs are treated as boundary inputs in combinational analysis), so gates U6, U7, and FF1 itself are not part of out1's combinational cone.
+#END 5
+#RESPONSE 6
+Two primary outputs have combinational fanin cones with more than 3 gates:
+- out0: 5 gates
+- out2: 6 gates
+out1 has only 1 gate in its cone (U8).
+#END 6
+#RESPONSE 7
+One primary output has a combinational fanin cone with more than 5 gates:
+- out2: 6 gates
+out0 has exactly 5 gates (does not exceed 5), and out1 has 1 gate.
+#END 7
+#RESPONSE 8
+Boundary inputs of out2's combinational cone: a, b, c (primary inputs), and DFF_OUT_FF1 (the output of FF1, treated as a fresh combinational input). Total: 4 boundary signals.
+#END 8

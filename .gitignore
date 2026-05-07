@@ -3,6 +3,9 @@ results/
 *.log
 *.stderr
 
+# ...except per-testcase reference answers, which are intentional content.
+!tests/**/golden.log
+
 # Pyverilog parser cache (regenerated on first import)
 parser.out
 parsetab.py

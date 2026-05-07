@@ -1,0 +1,28 @@
+#RESPONSE 1
+Acknowledged. Initialized testcase "path_queries". All subsequent responses will be recorded to path_queries.log. Design state is empty and ready for commands.
+#END 1
+#RESPONSE 2
+Loaded gate-level Verilog from tests/case_path_queries/design.v successfully. Module: demo_circuit | PI: 5 | PO: 3 | Gates: 10 | DFFs: 1
+#END 2
+#RESPONSE 3
+Yes — every combinational path from a to out0 passes through G_mid. Input a only reaches U1, whose output feeds G_mid; there is no alternative bypass route.
+#END 3
+#RESPONSE 4
+Yes — every combinational path from b to out0 passes through G_mid. Input b only reaches U1, and U1's output feeds G_mid before the path continues to U4 and U5.
+#END 4
+#RESPONSE 5
+No — not every path from c to out0 passes through G_mid. Input c reaches U2, which has two fanouts: one feeds G_mid (which then feeds U4) and the other feeds U4 directly. The latter route bypasses G_mid.
+#END 5
+#RESPONSE 6
+Yes — every combinational path from c to out2 passes through U4. Both routes from c (via U2 to G_mid, or via U2 directly to U4) converge at U4 before reaching U9 → U10 → out2.
+#END 6
+#RESPONSE 7
+No such path exists. Input a only enters the design through gate U1, so every a-to-out0 path must pass through U1.
+#END 7
+#RESPONSE 8
+Path from c to out0 not passing through G_mid:
+c -> [NOT] U2 -> [NAND] U4 -> [BUF] U5 -> out0
+#END 8
+#RESPONSE 9
+Gates on at least one path from a to out2: U1 (AND), G_mid (OR), U4 (NAND), U9 (NOR), U10 (NOT). 5 gates total.
+#END 9

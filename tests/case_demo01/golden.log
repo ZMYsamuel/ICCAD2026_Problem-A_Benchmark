@@ -1,0 +1,65 @@
+#RESPONSE 1
+Acknowledged. Initialized testcase "demo01". All subsequent responses will be recorded to demo01.log. Design state is empty and ready for commands.
+#END 1
+#RESPONSE 2
+Loaded gate-level Verilog from tests/case_demo01/design.v successfully. Module: demo_circuit | PI: 5 | PO: 3 | Gates: 10 | DFFs: 1
+#END 2
+#RESPONSE 3
+Module: demo_circuit
+Primary inputs (5): a, b, c, clk, rst_n
+Primary outputs (3): out0, out1, out2
+Gates by type: AND=2, NOT=2, OR=1, NAND=1, BUF=2, XOR=1, NOR=1 (total 10)
+DFF instances: 1 (FF1)
+#END 3
+#RESPONSE 4
+The maximum logic depth from a to out0 is 4 gate levels.
+Longest path: a -> [AND] U1 -> [OR] G_mid -> [NAND] U4 -> [BUF] U5 -> out0
+#END 4
+#RESPONSE 5
+The maximum logic depth from c to out0 is 4 gate levels.
+Longest path: c -> [NOT] U2 -> [OR] G_mid -> [NAND] U4 -> [BUF] U5 -> out0
+#END 5
+#RESPONSE 6
+The global maximum combinational depth across all PI-to-PO pairs is 5 gate levels.
+Longest example path: a -> [AND] U1 -> [OR] G_mid -> [NAND] U4 -> [NOR] U9 -> [NOT] U10 -> out2
+(Equivalent paths exist from b or c through U1/U2 with the same depth of 5.)
+#END 6
+#RESPONSE 7
+Yes — every combinational path from a to out0 passes through G_mid. There is no a-to-out0 path that bypasses G_mid.
+#END 7
+#RESPONSE 8
+No — not every combinational path from c to out0 passes through G_mid.
+There exists a path c -> [NOT] U2 -> [NAND] U4 -> [BUF] U5 -> out0 that does not include G_mid.
+#END 8
+#RESPONSE 9
+Path from c to out0 not passing through G_mid:
+c -> [NOT] U2 -> [NAND] U4 -> [BUF] U5 -> out0
+(4 gate levels, length 4.)
+#END 9
+#RESPONSE 10
+The combinational fanin cone of out0 contains 5 gates: U1 (AND), U2 (NOT), G_mid (OR), U4 (NAND), U5 (BUF). Boundary inputs of the cone: a, b, c.
+#END 10
+#RESPONSE 11
+Two primary outputs have fanin cones containing more than 3 gates:
+- out0: 5 gates
+- out2: 6 gates
+out1's combinational cone contains only 1 gate (U8) because U8's input is the DFF FF1's output, which is treated as a boundary signal.
+#END 11
+#RESPONSE 12
+Net G_mid is driven by gate G_mid (OR).
+Fanin (predecessors of G_mid): U1, U2 (2 inputs).
+Fanout: U4 (1 successor; G_mid drives net n3 which feeds the NAND U4).
+#END 12
+#RESPONSE 13
+There is 1 DFF instance in the design: FF1 (clock=clk, reset=rst_n, data=n6, output=q1).
+#END 13
+#RESPONSE 14
+Yes, FF1 is in the same clock domain as itself trivially (the design has only one clock domain, driven by `clk`). FF1's clock signal is `clk`.
+#END 14
+#RESPONSE 15
+Inserted a buffer named U_buf_n4 on net n4 between U4 and U5. Net n4 is now split into n4 and n4_buf; U_buf_n4 drives the new intermediate net.
+Equivalence verification: passed (preserve_all). Functionality unchanged.
+#END 15
+#RESPONSE 16
+Design written to /tmp/demo01_out.v. The output is ABC-compatible (the dff primitive module is appended automatically).
+#END 16

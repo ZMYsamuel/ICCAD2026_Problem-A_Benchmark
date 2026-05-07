@@ -1,0 +1,21 @@
+#RESPONSE 1
+Acknowledged. Initialized testcase "dff_clock". All subsequent responses will be recorded to dff_clock.log. Design state is empty and ready for commands.
+#END 1
+#RESPONSE 2
+Loaded gate-level Verilog from tests/case_dff_clock/design.v successfully. Module: demo_circuit | PI: 5 | PO: 3 | Gates: 10 | DFFs: 1
+#END 2
+#RESPONSE 3
+There is 1 DFF instance in the design: FF1.
+#END 3
+#RESPONSE 4
+FF1's clock signal is `clk` and its asynchronous active-low reset signal is `rst_n`.
+#END 4
+#RESPONSE 5
+The data (D) input of FF1 is net `n6`, which is the output of gate U7 (AND of U6's output and primary input c).
+#END 5
+#RESPONSE 6
+Yes — FF1 is in the same clock domain as itself (trivially, since both refer to the same instance). FF1's clock domain is driven by signal `clk`.
+#END 6
+#RESPONSE 7
+The design has 1 distinct clock domain. All sequential elements (just FF1 in this design) share clock signal `clk`.
+#END 7

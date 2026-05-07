@@ -1,0 +1,9 @@
+#RESPONSE 1
+Acknowledged. Initialized testcase "basic_io". All subsequent responses will be recorded to basic_io.log. Design state is empty and ready for commands.
+#END 1
+#RESPONSE 2
+Loaded gate-level Verilog from tests/case_basic_io/design.v successfully. Module: simple_and | PI: 2 | PO: 1 | Gates: 1 | DFFs: 0
+#END 2
+#RESPONSE 3
+Design written to /tmp/basic_io_out.v.
+#END 3
