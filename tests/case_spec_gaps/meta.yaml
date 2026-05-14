@@ -1,0 +1,57 @@
+schema_version: 1
+source: community
+contributor: "ZMYsamuel"
+tags: [spec_examples, fanout_reduction, dangling, gate_insertion, spec_4_3]
+prompts:
+  - { id: 1, task_type: basic, expected: { kind: ack, status: human_verified } }
+  - { id: 2, task_type: basic, expected: { kind: ack, status: human_verified } }
+  - id: 3
+    task_type: analysis
+    expected: { kind: free_text, status: human_verified }
+  - id: 4
+    task_type: analysis
+    expected: { kind: number, value: 4, status: human_verified }
+  - id: 5
+    task_type: analysis
+    expected:
+      kind: signal_list
+      value: [BUF_main, BUF_aux]
+      status: human_verified
+  - id: 6
+    task_type: analysis
+    expected:
+      kind: signal_list
+      value: [DANGLE_NOT, DANGLE_AND]
+      status: human_verified
+  - id: 7
+    task_type: modification
+    expected:
+      kind: equivalence
+      value: true
+      status: human_verified
+      # spec §4.3 example: "Buffer balancing" / fanout reduction
+  - id: 8
+    task_type: analysis
+    expected: { kind: number, value: 2, status: human_verified }
+  - id: 9
+    task_type: modification
+    expected:
+      kind: equivalence
+      value: true
+      status: human_verified
+      # spec §4.3 example: "Remove dangling gates"
+  - id: 10
+    task_type: analysis
+    expected:
+      kind: gate_count
+      value: null
+      status: review_pending
+      # exact count depends on how many fanout buffers (prompt 7) inserted
+  - id: 11
+    task_type: modification
+    expected:
+      kind: equivalence
+      value: true
+      status: human_verified
+      # spec §4.3 example: "Gate insertion based on naming patterns"
+  - { id: 12, task_type: basic, expected: { kind: ack, status: human_verified } }

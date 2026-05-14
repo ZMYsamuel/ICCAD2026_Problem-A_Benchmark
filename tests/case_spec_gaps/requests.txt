@@ -1,0 +1,12 @@
+This is the beginning of testcase spec_gaps. Please output a copy of the log into spec_gaps.log.
+Load design.v from the directory tests/case_spec_gaps/.
+Give me a netlist summary: module name, primary inputs, primary outputs, gate counts by type.
+What is the fanout of net hi? List every gate that hi drives.
+List all instance names that begin with the prefix BUF_.
+List all gates that are dangling — that is, gates whose output does not reach any primary output.
+Insert buffers wherever needed so that no gate in the design drives more than 2 loads. Ensure functional equivalence is preserved.
+After the buffer insertion, what is the new maximum fanout of net hi?
+Remove all dangling gates whose output does not feed any primary output. Ensure functional equivalence is preserved.
+After the dangling-gate removal, what is the new total gate count broken down by type?
+Insert one AND gate before each buffer whose instance name starts with BUF_ — the new AND gate ties the original buffer's input to constant 1, preserving functionality. Ensure functional equivalence.
+Write the current design to /tmp/spec_gaps_out.v.

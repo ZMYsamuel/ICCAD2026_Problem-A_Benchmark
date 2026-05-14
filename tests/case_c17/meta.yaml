@@ -1,0 +1,45 @@
+schema_version: 1
+source: community
+contributor: "ZMYsamuel (derived from ISCAS85 c17 by Brglez et al.)"
+tags: [iscas85, nand_only, signal_pair_equiv, spec_4_2]
+prompts:
+  - { id: 1, task_type: basic, expected: { kind: ack, status: human_verified } }
+  - { id: 2, task_type: basic, expected: { kind: ack, status: human_verified } }
+  - id: 3
+    task_type: analysis
+    expected: { kind: free_text, status: human_verified }
+  - id: 4
+    task_type: analysis
+    expected:
+      kind: gate_count
+      value: { and: 0, or: 0, not: 0, nand: 6, nor: 0, xor: 0, xnor: 0, buf: 0, dff: 0 }
+      status: human_verified
+  - id: 5
+    task_type: analysis
+    expected: { kind: number, value: 2, status: human_verified }
+  - id: 6
+    task_type: analysis
+    expected: { kind: number, value: 3, status: human_verified }
+  - id: 7
+    task_type: analysis
+    expected: { kind: path_list, value: null, status: review_pending }
+  - id: 8
+    task_type: analysis
+    expected: { kind: yes_no, value: true, status: human_verified }
+  - id: 9
+    task_type: analysis
+    expected:
+      kind: signal_list
+      value: [NAND2_3, NAND2_4]
+      status: human_verified
+  - id: 10
+    task_type: analysis
+    expected: { kind: number, value: 4, status: human_verified }
+  - id: 11
+    task_type: analysis
+    expected:
+      kind: yes_no
+      value: true
+      status: human_verified
+      # Spec §4.2 example pattern. By structure: N22 = NAND(N10, N16) directly.
+  - { id: 12, task_type: basic, expected: { kind: ack, status: human_verified } }

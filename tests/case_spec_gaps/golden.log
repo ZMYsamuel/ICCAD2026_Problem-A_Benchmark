@@ -1,0 +1,40 @@
+#RESPONSE 1
+Acknowledged. Initialized testcase "spec_gaps". All subsequent responses will be recorded to spec_gaps.log. Design state is empty and ready for commands.
+#END 1
+#RESPONSE 2
+Loaded gate-level Verilog from tests/case_spec_gaps/design.v successfully. Module: spec_gaps | PI: 6 | PO: 2 | Gates: 10 | DFFs: 0
+#END 2
+#RESPONSE 3
+Module: spec_gaps
+Primary inputs (6): a, b, c, d, e, f
+Primary outputs (2): out0, out1
+Gates by type: AND=3, OR=1, NOT=2, XOR=1, BUF=2, NAND=0, NOR=0, XNOR=0 (total 10)
+DFF instances: 0
+#END 3
+#RESPONSE 4
+The fanout of net hi is 4. Direct consumers: AND_a, AND_b, OR_a, NOT_a.
+#END 4
+#RESPONSE 5
+Instances with name prefix BUF_: BUF_main, BUF_aux.
+#END 5
+#RESPONSE 6
+Dangling gates (output does not reach any PO): DANGLE_NOT, DANGLE_AND. (2 gates.)
+#END 6
+#RESPONSE 7
+Buffer-insertion-for-fanout pass completed. Net hi was driving 4 consumers; inserted a balanced 2-level BUF tree so each downstream buffer drives at most 2 loads. Functional equivalence verified (random simulation + ABC cec).
+#END 7
+#RESPONSE 8
+The maximum fanout of net hi is now 2 (down from 4 originally).
+#END 8
+#RESPONSE 9
+Removed 2 dangling gates: DANGLE_NOT, DANGLE_AND. Functional equivalence verified — these gates did not feed any primary output.
+#END 9
+#RESPONSE 10
+Total gates after dangling-gate removal: 8. Breakdown: AND=2, OR=1, NOT=1, XOR=1, BUF=2 (+ inserted fanout buffers), NAND=0, NOR=0, XNOR=0.
+#END 10
+#RESPONSE 11
+Inserted 2 AND gates (one before each BUF_-prefixed buffer). Each new AND has the buffer's original input as one operand and constant 1'b1 as the other. Functional equivalence verified — AND(x, 1) = x is a no-op.
+#END 11
+#RESPONSE 12
+Design written to /tmp/spec_gaps_out.v.
+#END 12

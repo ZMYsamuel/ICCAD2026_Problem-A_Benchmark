@@ -1,0 +1,43 @@
+#RESPONSE 1
+Acknowledged. Initialized testcase "c17". All subsequent responses will be recorded to c17.log. Design state is empty and ready for commands.
+#END 1
+#RESPONSE 2
+Loaded gate-level Verilog from tests/case_c17/design.v successfully. Module: c17 | PI: 5 | PO: 2 | Gates: 6 | DFFs: 0
+#END 2
+#RESPONSE 3
+Module: c17
+Primary inputs (5): N1, N2, N3, N6, N7
+Primary outputs (2): N22, N23
+Gates by type: NAND=6 (total 6)
+DFF instances: 0
+#END 3
+#RESPONSE 4
+Total gates: 6. Breakdown: AND=0, OR=0, NOT=0, NAND=6, NOR=0, XOR=0, XNOR=0, BUF=0, DFF=0.
+#END 4
+#RESPONSE 5
+The maximum logic depth from N1 to N22 is 2 gate levels.
+Path: N1 -> [NAND] NAND2_1 -> [NAND] NAND2_5 -> N22
+#END 5
+#RESPONSE 6
+The maximum logic depth from N3 to N23 is 3 gate levels.
+Longest path: N3 -> [NAND] NAND2_2 -> [NAND] NAND2_3 -> [NAND] NAND2_6 -> N23
+(An equivalent-depth path goes via NAND2_4 instead of NAND2_3.)
+#END 6
+#RESPONSE 7
+A path from N3 to N22: N3 -> [NAND] NAND2_1 -> [NAND] NAND2_5 -> N22.
+#END 7
+#RESPONSE 8
+Yes — every path from N3 to N22 passes through NAND2_5, because NAND2_5 is the only gate whose output is connected to N22.
+#END 8
+#RESPONSE 9
+The fanout of net N11 is 2. N11 directly drives: NAND2_3, NAND2_4.
+#END 9
+#RESPONSE 10
+The transitive fanin cone of N22 contains 4 gates: NAND2_5, NAND2_1, NAND2_3, NAND2_2. (Roots at PIs N1, N2, N3, N6.)
+#END 10
+#RESPONSE 11
+Yes — by direct structural inspection: N22 = NAND(N10, N16) in the netlist. So a=N10, b=N16 is a witness pair.
+#END 11
+#RESPONSE 12
+Design written to /tmp/c17_out.v.
+#END 12
