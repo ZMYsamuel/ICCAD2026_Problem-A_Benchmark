@@ -1,6 +1,6 @@
 # ICCAD 2026 Problem A — 公開題庫
 
-社群協作的 **ICCAD Contest 2026 Problem A: LLM-Assisted Netlist Exploration and Transformation** benchmark 題庫。
+自製的 **ICCAD Contest 2026 Problem A: LLM-Assisted Netlist Exploration and Transformation** benchmark 題庫。
 
 題目要求參賽隊伍打造一個系統，能接收自然語言請求、理解之後對 gate-level Verilog netlist 進行分析或轉換操作。這個 repo 蒐集 testcase（design + NL request 序列 + 參考答案），讓任何隊伍都能拿來評估自己的系統。
 

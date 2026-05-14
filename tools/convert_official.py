@@ -19,9 +19,7 @@ edit meta.yaml by hand to refine after.
 from __future__ import annotations
 
 import argparse
-import os
 import re
-import shutil
 import sys
 from pathlib import Path
 
@@ -192,7 +190,6 @@ def make_readme(case_name: str, prompts: list[str], netlist_lines: int) -> str:
 
 
 def convert_one(src_dir: Path, dst_dir: Path, source_tag: str) -> dict:
-    """Convert one testcase. Returns dict with stats."""
     case_name = src_dir.name
     src_v = src_dir / f"{case_name}.v"
     src_p = src_dir / "prompt.txt"
@@ -203,29 +200,20 @@ def convert_one(src_dir: Path, dst_dir: Path, source_tag: str) -> dict:
 
     dst_dir.mkdir(parents=True, exist_ok=True)
 
-    # Netlist: symlink (so private/ stays small and edits to official source
-    # propagate). Use absolute path so symlink doesn't break if private/ moves.
+    # Symlink uses absolute path so private/ relocation doesn't break links.
     dst_v = dst_dir / f"{case_name}.v"
-    if dst_v.is_symlink() or dst_v.exists():
-        dst_v.unlink()
+    dst_v.unlink(missing_ok=True)
     dst_v.symlink_to(src_v.resolve())
 
-    # Prompts: copy verbatim (so the file is contest-format).
     prompts = parse_prompt_file(src_p)
     (dst_dir / "requests.txt").write_text("\n".join(prompts) + "\n",
                                           encoding="utf-8")
-
-    # Empty golden stub.
     (dst_dir / "golden.log").write_text(
         make_empty_golden(len(prompts), case_name), encoding="utf-8"
     )
-
-    # Meta.
     (dst_dir / "meta.yaml").write_text(
         make_meta_yaml(prompts, source_tag, case_name), encoding="utf-8"
     )
-
-    # README.
     netlist_lines = src_v.read_text(encoding="utf-8", errors="ignore").count("\n")
     (dst_dir / "README.md").write_text(
         make_readme(case_name, prompts, netlist_lines), encoding="utf-8"

@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -60,10 +61,6 @@ OTHER_TIMEOUT_S = 300
 CASE_HARD_CEILING_S = 6300
 
 
-# ---------------------------------------------------------------------------
-# Data classes
-# ---------------------------------------------------------------------------
-
 @dataclass
 class PromptResult:
     id: int
@@ -91,10 +88,6 @@ class CaseResult:
     log_path: str = ""           # the <case_name>.log captured from system cwd
 
 
-# ---------------------------------------------------------------------------
-# Discovery
-# ---------------------------------------------------------------------------
-
 def discover_cases(source: str, cases: Optional[list[str]]) -> list[Path]:
     roots: list[tuple[str, Path]] = []
     if source in ("official", "all"):
@@ -111,7 +104,6 @@ def discover_cases(source: str, cases: Optional[list[str]]) -> list[Path]:
         for d in sorted(root.iterdir()):
             if not d.is_dir():
                 continue
-            # Official: testNN/, community: case_<name>/
             if tag == "official" and not d.name.startswith("test"):
                 continue
             if tag == "community" and not d.name.startswith("case_"):
@@ -125,10 +117,6 @@ def discover_cases(source: str, cases: Optional[list[str]]) -> list[Path]:
             found.append(d)
     return found
 
-
-# ---------------------------------------------------------------------------
-# Workdir setup
-# ---------------------------------------------------------------------------
 
 def build_workdir(case_dir: Path, meta: dict, workdir: Path) -> None:
     """Symlink netlist + any other files into workdir per meta.runtime."""
@@ -152,10 +140,6 @@ def build_workdir(case_dir: Path, meta: dict, workdir: Path) -> None:
                 tgt.parent.mkdir(parents=True, exist_ok=True)
                 tgt.symlink_to(f.resolve())
 
-
-# ---------------------------------------------------------------------------
-# Protocol runner
-# ---------------------------------------------------------------------------
 
 def load_meta(case_dir: Path) -> dict:
     p = case_dir / "meta.yaml"
@@ -225,7 +209,6 @@ def run_case(case_dir: Path, system_cmd: str,
         res.finished_at = time.time()
         return res
 
-    # Spawn system.
     env = os.environ.copy()
     env["LD_LIBRARY_PATH"] = f"/lib64/:{env.get('LD_LIBRARY_PATH','')}"
     stderr_fh = open(res.stderr_path, "w", encoding="utf-8")
@@ -245,7 +228,6 @@ def run_case(case_dir: Path, system_cmd: str,
         res.finished_at = time.time()
         return res
 
-    # Per-prompt loop. After sending a prompt, read stdout until #END <id>.
     case_start = time.time()
     try:
         for i, text in enumerate(prompts, start=1):
@@ -256,7 +238,6 @@ def run_case(case_dir: Path, system_cmd: str,
             pr = PromptResult(id=i, text=text, task_type=task_type,
                               expected_kind=expected_kind)
 
-            # Case hard ceiling.
             if time.time() - case_start > CASE_HARD_CEILING_S:
                 pr.status = "timeout"
                 pr.error = "case hard ceiling exceeded"
@@ -277,7 +258,6 @@ def run_case(case_dir: Path, system_cmd: str,
                 res.prompts.append(pr)
                 break
 
-            # Read until #END <id>.
             deadline = t_send + prompt_timeout(task_type)
             collected: list[str] = []
             saw_end = False
@@ -290,9 +270,6 @@ def run_case(case_dir: Path, system_cmd: str,
                     pr.error = (f"no #END {i} within "
                                 f"{prompt_timeout(task_type)}s")
                     break
-                # Use a thread to read with timeout. simpler approach:
-                # set a select() with poll. But stdout is line-buffered
-                # so we readline() with a short backstop loop.
                 line = _readline_nonblocking(proc.stdout, deadline)
                 if line is None:
                     pr.status = "timeout"
@@ -301,7 +278,6 @@ def run_case(case_dir: Path, system_cmd: str,
                                 f"{prompt_timeout(task_type)}s")
                     break
                 if line == "":
-                    # EOF
                     pr.status = "crash"
                     pr.error = "system stdout closed (process exited?)"
                     pr.duration_s = time.time() - t_send
@@ -329,7 +305,7 @@ def run_case(case_dir: Path, system_cmd: str,
                     pr.duration_s = time.time() - t_send
 
             res.prompts.append(pr)
-            if pr.status in ("crash",):
+            if pr.status == "crash":
                 break
 
         # All prompts done — close stdin, wait briefly for graceful exit.
@@ -346,13 +322,10 @@ def run_case(case_dir: Path, system_cmd: str,
     finally:
         stderr_fh.close()
 
-        # Try to capture the system-written <case>.log.
-        # System writes the log to its cwd as <name>.log (per main.py).
-        # Look for *.log in workdir, prefer matching case_name's testcase id.
+        # System writes its <case>.log to cwd per contest §3.3; may also nest
+        # one inside testcase/<name>/ if it took the prompt path literally.
         case_id = _extract_case_id_from_prompts(prompts)
-        log_candidates = list(workdir.glob("*.log"))
-        # also nested (in case system wrote it inside testcase/<name>/)
-        log_candidates += list(workdir.rglob("*.log"))
+        log_candidates = list(workdir.rglob("*.log"))
         if case_id:
             preferred = [p for p in log_candidates
                          if p.name == f"{case_id}.log"]
@@ -364,20 +337,22 @@ def run_case(case_dir: Path, system_cmd: str,
             except OSError:
                 pass
 
-        # Preserve any *.v files the system wrote (modification / optimization
-        # outputs). Skip the original netlist that was symlinked in (it's still
-        # a symlink, not a real new file). Anything else is system-written.
+        # Preserve system-written .v files (modification/optimization outputs).
+        # The original netlist mounted via symlink is excluded by the is_symlink
+        # check — anything else is system-authored.
         artifacts_dir = case_results_dir / "artifacts"
+        artifacts_made = False
         for v in workdir.rglob("*.v"):
             if v.is_symlink():
                 continue
-            try:
+            if not artifacts_made:
                 artifacts_dir.mkdir(parents=True, exist_ok=True)
+                artifacts_made = True
+            try:
                 shutil.copy2(v, artifacts_dir / v.name)
             except OSError:
                 pass
 
-        # Cleanup workdir unless --keep-workdir.
         if not os.environ.get("BENCH_KEEP_WORKDIR"):
             try:
                 shutil.rmtree(workdir, ignore_errors=True)
@@ -397,8 +372,6 @@ def run_case(case_dir: Path, system_cmd: str,
 
 def _readline_nonblocking(stream, deadline: float, poll_interval: float = 0.05) -> Optional[str]:
     """Read a line from a pipe, returning None on timeout, "" on EOF."""
-    # subprocess pipes in text=True don't expose `peek` cleanly, but readline()
-    # blocks. Use a thread to read with timeout.
     result: list = [None]
     def reader():
         try:
@@ -415,7 +388,6 @@ def _readline_nonblocking(stream, deadline: float, poll_interval: float = 0.05) 
 
 def _extract_case_id_from_prompts(prompts: list[str]) -> Optional[str]:
     """Find 'case name is <X>' or 'testcase <X>' in the first prompt."""
-    import re
     if not prompts:
         return None
     m = re.search(r"case name is (\w+)", prompts[0])
@@ -427,13 +399,8 @@ def _extract_case_id_from_prompts(prompts: list[str]) -> Optional[str]:
     return None
 
 
-# ---------------------------------------------------------------------------
-# Result book renderer
-# ---------------------------------------------------------------------------
-
 def render_result_book(results: list[CaseResult], out_path: Path,
                        run_meta: dict) -> None:
-    # Aggregate stats.
     total_prompts = sum(len(r.prompts) for r in results)
     total_ok = sum(1 for r in results for p in r.prompts if p.status == "ok")
     total_timeout = sum(1 for r in results for p in r.prompts
@@ -542,10 +509,6 @@ def render_result_book(results: list[CaseResult], out_path: Path,
 
     out_path.write_text("\n".join(lines), encoding="utf-8")
 
-
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
 
 def main():
     ap = argparse.ArgumentParser()
