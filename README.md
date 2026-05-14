@@ -4,7 +4,7 @@ A community-built benchmark suite for **ICCAD Contest 2026 Problem A: LLM-Assist
 
 The contest asks teams to build a system that accepts natural-language requests, interprets them, and executes analysis or transformation flows on a gate-level Verilog design. This repo collects testcases — designs paired with NL request sequences and reference answers — that anyone can use to evaluate their own system.
 
-> 繁體中文版說明請見 [README.zh-TW.md](README.zh-TW.md).
+> 繁中版說明請見 [README.zh-TW.md](README.zh-TW.md).
 
 ## Goals
 
@@ -46,13 +46,13 @@ ICCAD2026_Problem-A_Benchmark/
 
 ## Format conformance with the contest spec
 
-| Contest spec (problem statement §3) | This repo |
-|---|---|
-| System reads NL requests from **stdin**, one per line | `tests/<case>/requests.txt` is exactly that stream |
-| System writes responses to **stdout** delimited by `#RESPONSE <id>` / `#END <id>` | `tests/<case>/golden.log` is the reference response stream in this exact format |
-| System also writes a copy to `<case_name>.log` | The runner captures the system's actual log into `results/<run>/<case>/system.log` for inspection |
-| Testcase begins with `This is the beginning of testcase <name>. ...` | First line of `requests.txt` follows this pattern |
-| Per-prompt timeout: 60s for basic ops, 300s for others | `runner/run_bench.py` enforces both, marks per-prompt `status: timeout` |
+| Contest spec (problem statement §3)                                               | This repo                                                                                         |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| System reads NL requests from **stdin**, one per line                             | `tests/<case>/requests.txt` is exactly that stream                                                |
+| System writes responses to **stdout** delimited by `#RESPONSE <id>` / `#END <id>` | `tests/<case>/golden.log` is the reference response stream in this exact format                   |
+| System also writes a copy to `<case_name>.log`                                    | The runner captures the system's actual log into `results/<run>/<case>/system.log` for inspection |
+| Testcase begins with `This is the beginning of testcase <name>. ...`              | First line of `requests.txt` follows this pattern                                                 |
+| Per-prompt timeout: 60s for basic ops, 300s for others                            | `runner/run_bench.py` enforces both, marks per-prompt `status: timeout`                           |
 
 ## Quick start
 
@@ -87,13 +87,13 @@ The runner produces a `result_book.md` per run containing per-case timing, per-p
 python3 runner/run_bench.py [flags]
 ```
 
-| Flag | Default | Description |
-|---|---|---|
-| `--system-cmd <str>` | `$BENCH_SYSTEM_CMD` env var, or `./your_team_alpha -config llm_config.yaml` | Shell command to invoke the system under test. Required — runner cannot work without a real binary path. The runner spawns this command in a temp workdir per case, pipes `requests.txt` to its stdin, and reads `#RESPONSE/#END` lines from stdout. |
-| `--source <enum>` | `all` | Which corpus to draw cases from. `community` → `tests/case_*/` (public, this repo). `official` → `private/official_0510/test*/` (gitignored, see below). `personal` → reserved. `all` → both. |
-| `--cases <csv>` | _(none)_ | Comma-separated case names to filter (e.g. `test01,test10,case_demo01`). Matches against the case directory's name with or without the `case_` prefix. |
-| `--output-dir <path>` | `results/run_<timestamp>/` | Override where the result book + per-case artifacts get written. |
-| `--list-only` | off | Print the discovered case directories and exit without running. Useful for sanity-checking selectors. |
+| Flag                  | Default                                                                     | Description                                                                                                                                                                                                                                          |
+| --------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--system-cmd <str>`  | `$BENCH_SYSTEM_CMD` env var, or `./your_team_alpha -config llm_config.yaml` | Shell command to invoke the system under test. Required — runner cannot work without a real binary path. The runner spawns this command in a temp workdir per case, pipes `requests.txt` to its stdin, and reads `#RESPONSE/#END` lines from stdout. |
+| `--source <enum>`     | `all`                                                                       | Which corpus to draw cases from. `community` → `tests/case_*/` (public, this repo). `official` → `private/official_0510/test*/` (gitignored, see below). `personal` → reserved. `all` → both.                                                        |
+| `--cases <csv>`       | _(none)_                                                                    | Comma-separated case names to filter (e.g. `test01,test10,case_demo01`). Matches against the case directory's name with or without the `case_` prefix.                                                                                               |
+| `--output-dir <path>` | `results/run_<timestamp>/`                                                  | Override where the result book + per-case artifacts get written.                                                                                                                                                                                     |
+| `--list-only`         | off                                                                         | Print the discovered case directories and exit without running. Useful for sanity-checking selectors.                                                                                                                                                |
 
 The runner inherits the **environment** of whoever invokes it, so anything the system reads at startup (API keys, `LD_LIBRARY_PATH`, config files via your shell wrapper) is whatever the shell already has set. The runner only injects `LD_LIBRARY_PATH=/lib64/:$LD_LIBRARY_PATH` so PyYAML on NTHU workstations works.
 
@@ -138,6 +138,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full mandatory format. Short vers
 
 ## Status
 
-- 2026-05-07: Initial scaffold + 6 sample testcases derived from the contest problem statement examples and a small Week-4 demo design.
+- 2026-05-07: Initial scaffold + 6 sample testcases derived from the contest problem statement examples and a small demo design.
 - 2026-05-14: Python runner + meta.yaml schema + `case_c17` (ISCAS85) + `case_spec_gaps` (spec §4.3 transformation patterns).
 - See [TODO.md](TODO.md) for deferred work (CI validation, LLM-judge for automated scoring, dual-provider side-by-side runs).
