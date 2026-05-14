@@ -18,7 +18,7 @@ Never grade against a `review_pending` reference and conclude the system is brok
 
 ### Pass 1 — Auto-fill the deterministic 60% (target: 4-6 hours of YOUR time, mostly script-driven)
 
-For each kind, ask "can I compute this from `design.v` alone, without running cada0001_alpha?":
+For each kind, ask "can I compute this from `design.v` alone, without running the system?":
 
 | kind | Auto-computable? | How |
 |---|---|---|

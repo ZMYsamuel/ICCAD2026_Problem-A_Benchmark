@@ -37,17 +37,19 @@ from typing import Optional
 try:
     import yaml
 except ImportError:
-    print("error: PyYAML not installed. Activate the cada0001_alpha venv:",
+    print("error: PyYAML is required. Install via:",
           file=sys.stderr)
-    print("  LD_LIBRARY_PATH=/lib64/ ~/cada0001_alpha/.venv/bin/python "
-          "runner/run_bench.py ...", file=sys.stderr)
+    print("  python3 -m pip install pyyaml", file=sys.stderr)
     sys.exit(2)
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_SYSTEM_CMD = (
-    f"{Path.home() / 'cada0001_alpha' / 'cada0001_alpha'} "
-    f"-config {Path.home() / 'cada0001_alpha' / 'llm_config.yaml'}"
+# Default points at a sibling repo named `system/` for new contestants to
+# clone next to this benchmark. Override with --system-cmd or set the
+# BENCH_SYSTEM_CMD environment variable to point at your own binary.
+DEFAULT_SYSTEM_CMD = os.environ.get(
+    "BENCH_SYSTEM_CMD",
+    "./your_team_alpha -config llm_config.yaml",
 )
 
 BASIC_TIMEOUT_S = 60
@@ -553,13 +555,19 @@ def render_result_book(results: list[CaseResult], out_path: Path,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--system-cmd", default=DEFAULT_SYSTEM_CMD,
-                    help="command to invoke the system-under-test")
+                    help="command to invoke the system-under-test "
+                         "(also reads BENCH_SYSTEM_CMD env var)")
     ap.add_argument("--source", choices=["official", "community", "personal", "all"],
                     default="all")
     ap.add_argument("--cases", default=None,
                     help="comma-separated case names (e.g. test01,test10)")
     ap.add_argument("--provider", default="openai",
-                    choices=["openai", "anthropic"])
+                    choices=["openai", "anthropic"],
+                    help="LLM provider — recorded in result book metadata. "
+                         "Does NOT auto-switch the system's config; you must "
+                         "ensure --system-cmd points at a config with the "
+                         "matching `provider:` field. Contest §6.2 requires "
+                         "support for both gpt-4o-mini and claude-haiku-4-5.")
     ap.add_argument("--output-dir", type=Path, default=None,
                     help="results dir (default: results/run_<timestamp>/)")
     ap.add_argument("--list-only", action="store_true",

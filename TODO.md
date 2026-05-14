@@ -1,13 +1,6 @@
 # TODO — Deferred Work
 
-Tracking items intentionally left for later iterations. Everything here is *out of scope* for the current week's commit set; revisit when the corresponding precondition is satisfied.
-
-## Post-contest releases
-
-These ship after the alpha / final submission deadlines so the public surface doesn't leak strategy mid-contest:
-
-- **Public invite + community contributor outreach.** README already explains the format, but actively inviting other teams happens after our own submission is in.
-- **Promotional notes** (talks / blog posts) referencing this benchmark as evidence of our system's evaluation discipline.
+Tracking items intentionally left for later iterations. Everything here is *out of scope* for the current commit set; revisit when the corresponding precondition is satisfied.
 
 ## Automation (CI)
 
@@ -20,10 +13,10 @@ Inspired by `sys-nthu/ast26-quiz`'s contribution flow.
 
 ## Runner enhancements
 
-- **Side-by-side dual-provider run** — same testcase under both OpenAI and Anthropic in a single invocation, output as two columns in the result book. Currently runner is single-provider per invocation.
+- **Side-by-side dual-provider run** — same testcase under both OpenAI and Anthropic in a single invocation, output as two columns in the result book. Currently the runner is single-provider per invocation.
 - **Reproducibility N-run mode** — run each testcase N times (default 3), report answer variance / pass-rate per prompt. Useful because LLM responses are non-deterministic.
-- **Per-prompt token / cost accounting** — wire into the rate limiter's accounting and surface `tokens_used` / `$_spent` per prompt in the result book.
-- **Concurrency** — `--jobs N` to run N testcases in parallel. Wall-time savings matter once we routinely run the official 40.
+- **Per-prompt token / cost accounting** — surface `tokens_used` / `$_spent` per prompt in the result book when the system reports them.
+- **Concurrency** — `--jobs N` to run N testcases in parallel. Wall-time savings matter once routinely running the official 40.
 
 ## Result book enhancements
 
@@ -31,22 +24,22 @@ Inspired by `sys-nthu/ast26-quiz`'s contribution flow.
 - **Tagging filter on render** — render only `task_type=analysis` rows, etc.
 - **Historical comparison** — diff a new run against the previous result book to catch regressions.
 
-## Testcase coverage gaps (community-targeted)
+## Testcase coverage gaps
 
-Currently in the public `tests/`:
+Currently in `tests/`:
 
-- 6 cases derived from the contest problem-statement examples + our Week-4 demo.
-- Light on: multi-clock domain, scan chain, retiming-relevant, deep XOR trees, very-large netlists (>10k gates).
+- 6 cases derived from the contest problem-statement examples and a small handful of hand-crafted designs.
+- 2 cases added 2026-05-14: `case_c17` (ISCAS85) and `case_spec_gaps` (spec §4.3 transformation patterns).
 
-Adversarial twists especially welcome: instance literally named `out0`, dangling gates, constant outputs.
+Light on: multi-clock domain, scan chain, retiming-relevant, deep XOR trees, very-large netlists (>10k gates). Contributions especially welcome here.
+
+Adversarial twists especially welcome: instance literally named `out0`, dangling gates, constant outputs, signals named like Verilog keywords.
 
 ## Open questions to contest organizers
 
-These are uncertainties about the contest spec itself, not the benchmark. Cross-referenced from `cada0001_alpha/docs/questions_for_organizers.md`:
+Uncertainties about the contest spec itself, not the benchmark. Resolutions get folded into the schema and CONTRIBUTING.md once received.
 
 1. Definition of `cost` for optimization tasks (gate count? depth? AIG nodes?).
 2. Hard requirements vs soft objectives — how to interpret implicit constraints.
 3. Multi-PO optimization scope — when shared fanout prevents in-place change, is duplicating logic acceptable.
 4. Counterexample format for analysis questions.
-
-Resolutions get folded into the schema and CONTRIBUTING.md once received.
