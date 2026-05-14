@@ -6,6 +6,10 @@ results/
 # ...except per-testcase reference answers, which are intentional content.
 !tests/**/golden.log
 
+# Private testcase corpus (e.g. official contest cases that we cannot redistribute).
+# The runner can still target this directory locally via --source official.
+private/
+
 # Pyverilog parser cache (regenerated on first import)
 parser.out
 parsetab.py
