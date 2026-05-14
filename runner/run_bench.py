@@ -11,7 +11,6 @@ Selectors:
   --source {official|community|personal|all}   default: all
   --cases test01,test10,...                    explicit case names
   --tag tag1,tag2                              filter by meta.yaml tags (future)
-  --provider {openai|anthropic}                injected into system via env
 
 Each case runs in its own temp workdir. Netlist gets symlinked at the path
 the prompts reference; cwd is set so the system's relative paths resolve.
@@ -175,7 +174,7 @@ def prompt_timeout(task_type: str) -> int:
     return BASIC_TIMEOUT_S if task_type == "basic" else OTHER_TIMEOUT_S
 
 
-def run_case(case_dir: Path, system_cmd: str, provider: str,
+def run_case(case_dir: Path, system_cmd: str,
              results_dir: Path) -> CaseResult:
     """Run a single testcase end-to-end. Returns a CaseResult."""
     meta = load_meta(case_dir)
@@ -229,9 +228,6 @@ def run_case(case_dir: Path, system_cmd: str, provider: str,
     # Spawn system.
     env = os.environ.copy()
     env["LD_LIBRARY_PATH"] = f"/lib64/:{env.get('LD_LIBRARY_PATH','')}"
-    if provider:
-        env["BENCH_PROVIDER"] = provider  # documentation hint; actual provider
-                                           # selection is via llm_config.yaml
     stderr_fh = open(res.stderr_path, "w", encoding="utf-8")
     try:
         proc = subprocess.Popen(
@@ -476,7 +472,6 @@ def render_result_book(results: list[CaseResult], out_path: Path,
         f"- **Ended**: {ended_iso}",
         f"- **Total wall time**: {fmt_dur(total_wall_s)}",
         f"- **System cmd**: `{run_meta.get('system_cmd')}`",
-        f"- **Provider**: {run_meta.get('provider')}",
         "",
         "## Aggregate",
         "",
@@ -561,13 +556,6 @@ def main():
                     default="all")
     ap.add_argument("--cases", default=None,
                     help="comma-separated case names (e.g. test01,test10)")
-    ap.add_argument("--provider", default="openai",
-                    choices=["openai", "anthropic"],
-                    help="LLM provider — recorded in result book metadata. "
-                         "Does NOT auto-switch the system's config; you must "
-                         "ensure --system-cmd points at a config with the "
-                         "matching `provider:` field. Contest §6.2 requires "
-                         "support for both gpt-4o-mini and claude-haiku-4-5.")
     ap.add_argument("--output-dir", type=Path, default=None,
                     help="results dir (default: results/run_<timestamp>/)")
     ap.add_argument("--list-only", action="store_true",
@@ -598,7 +586,6 @@ def main():
         "run_id": run_id,
         "started_iso": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "system_cmd": args.system_cmd,
-        "provider": args.provider,
         "source_filter": args.source,
         "cases_filter": cases_filter,
     }
@@ -609,7 +596,7 @@ def main():
     results: list[CaseResult] = []
     for d in case_dirs:
         print(f"[case] {d.name} ...", flush=True)
-        r = run_case(d, args.system_cmd, args.provider, output_dir)
+        r = run_case(d, args.system_cmd, output_dir)
         results.append(r)
         # Persist per-case JSON immediately so we don't lose data on crash.
         (output_dir / f"{d.name}.json").write_text(

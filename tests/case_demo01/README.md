@@ -15,7 +15,8 @@ Compact gate-level circuit (10 combinational gates + 1 DFF) deliberately constru
    n4, q1 ──[U9: NOR]──n7──[U10: NOT]──out2
 ```
 
-Key properties (verified against `cada0001_alpha`):
+Key properties:
+
 - Total gates: 10 (AND=2, NOT=2, OR=1, NAND=1, BUF=2, XOR=1, NOR=1) plus 1 DFF.
 - Max depth a→out0 = 4 (longest combinational path).
 - Global max combinational depth = 5 (any of a/b/c → out2).
@@ -25,22 +26,22 @@ Key properties (verified against `cada0001_alpha`):
 
 The 16 questions exercise:
 
-| # | Type | What it tests |
-|---|------|---------------|
-| 1 | basic | testcase initialization (per contest §3.3) |
-| 2 | basic | design loading |
-| 3 | analysis | netlist summary (PI/PO/gate counts) |
-| 4–5 | analysis | per-PI to PO depth |
-| 6 | analysis | global max depth across all PI-PO pairs |
-| 7–8 | analysis | path properties (must-pass-through) |
-| 9 | analysis | path enumeration with negative constraint |
-| 10 | analysis | cone size of a single PO |
-| 11 | analysis | filter POs by cone-size threshold |
-| 12 | analysis | fanin / fanout of an internal net |
-| 13 | analysis | DFF enumeration |
-| 14 | analysis | clock domain comparison |
-| 15 | transform | buffer insertion (preserve_all equivalence) |
-| 16 | basic | design write-out |
+| #   | Type      | What it tests                               |
+| --- | --------- | ------------------------------------------- |
+| 1   | basic     | testcase initialization (per contest §3.3)  |
+| 2   | basic     | design loading                              |
+| 3   | analysis  | netlist summary (PI/PO/gate counts)         |
+| 4–5 | analysis  | per-PI to PO depth                          |
+| 6   | analysis  | global max depth across all PI-PO pairs     |
+| 7–8 | analysis  | path properties (must-pass-through)         |
+| 9   | analysis  | path enumeration with negative constraint   |
+| 10  | analysis  | cone size of a single PO                    |
+| 11  | analysis  | filter POs by cone-size threshold           |
+| 12  | analysis  | fanin / fanout of an internal net           |
+| 13  | analysis  | DFF enumeration                             |
+| 14  | analysis  | clock domain comparison                     |
+| 15  | transform | buffer insertion (preserve_all equivalence) |
+| 16  | basic     | design write-out                            |
 
 ## Notes for reviewers
 
