@@ -33,8 +33,9 @@ END_RE      = re.compile(r"^#END\s+(\d+)\s*$",      re.MULTILINE)
 
 def get_changed_files(base_sha: str) -> List[str]:
     result = subprocess.run(
-        ["git", "diff", "--name-only", "--diff-filter=ACMR", f"{base_sha}...HEAD"],
-        capture_output=True, text=True, check=True, cwd=REPO_ROOT,
+        ["git", "diff", "--name-only", "--diff-filter=ACMR", "{}...HEAD".format(base_sha)],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        universal_newlines=True, check=True, cwd=str(REPO_ROOT),
     )
     return [f for f in result.stdout.splitlines() if f.strip()]
 
