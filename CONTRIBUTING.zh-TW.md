@@ -46,7 +46,7 @@
 
 ### Step 1 — Fork 並 clone
 
-在 GitHub UI 上 fork 這個 repo，然後可以選擇 clone 到本機，或直接在瀏覽器裡編輯檔案：
+在 GitHub UI 上 fork 這個 repo，然後可以選擇 clone 到工作站，或直接在瀏覽器裡編輯檔案：
 
 ```bash
 git clone https://github.com/<your-github-username>/ICCAD2026_Problem-A_Benchmark.git
@@ -54,11 +54,11 @@ cd ICCAD2026_Problem-A_Benchmark
 git checkout -b submission/<your-github-username>
 ```
 
-### Step 2 — 產生你的輸出 _(選填)_
+### Step 2 — 產生你的輸出 _(可選)_
 
 你可以用任何習慣的方式產生 `.log` — 手動跑你的系統、用自己的 harness 餵 prompt、都沒問題。唯一的要求是輸出的 log 檔需要使用 `#RESPONSE N` / `#END N` block 格式，且 block 數量等於 `requests.txt` 中非註解行的數量。
 
-若想直接用現成的 runner，這個 repo 也有附（詳見 [FAQ](README.zh-TW.md#faq--常見問題) 若遇到問題）：
+也歡迎直接使用 repo 附的現成 runner（若遇到問題可參 [FAQ](README.zh-TW.md#faq--常見問題) ）：
 
 ```bash
 # BENCH_SYSTEM_CMD 必須使用絕對路徑 — runner 在暫存目錄執行，相對路徑無法解析。
@@ -75,13 +75,13 @@ python3.9 runner/run_bench.py --source official
 python3.9 runner/run_bench.py --source community --cases demo01
 ```
 
-Runner 會把輸出寫到 `results/run_<timestamp>/<case>/system.log`。`results/` 資料夾只留在你的本機 — 已在 `.gitignore` 裡。
+Runner 會把輸出寫到 `results/run_<timestamp>/<case>/system.log`。`results/` 資料夾只留在你的工作站 — 已在 `.gitignore` 裡。
 
-若是新增 testcase 投稿，直接寫檔案就好。
+若是想新增社群 testcase 投稿，直接寫檔案就好。
 
 ### Step 3 — 把檔案放到對的位置
 
-你可以在 GitHub 網頁 UI 上直接拖拉上傳（在你的 fork 點 `Add file → Upload files`），或在本機操作：
+你可以在 GitHub 網頁 UI 上直接拖拉上傳（在你的 fork 點 `Add file → Upload files`），或在工作站操作：
 
 ```bash
 # 答案投稿（以官方 testcase 為例）
@@ -111,7 +111,7 @@ notes: |
 
 ### Step 4 — Commit 並 push
 
-如果在 Step 3 是透過瀏覽器上傳，GitHub 已經自動幫你 commit 了，可直接跳到下一步。若是在本機操作：
+如果在 Step 3 是透過瀏覽器上傳，GitHub 已經自動幫你 commit 了，可直接跳到下一步。若是在工作站操作：
 
 ```bash
 git add <你新增的檔案>
@@ -127,7 +127,7 @@ git push origin submission/<your-github-username>
 
 CI 對你的 PR 做結構檢查（資料夾名、必要檔案、log 格式），不是正確性檢查。
 
-若 check fail 了，先讀錯誤訊息嘗試在本機修正。大多數錯誤都很單純：
+若 check fail 了，先讀錯誤訊息嘗試在本地修正。大多數錯誤都很單純：
 
 - 資料夾名與你的 GitHub login 不符 → 改名。
 - Log 檔名與預期不符 → 改名為 `<case_name>.log`（必須等於 case 資料夾名，例如 `community_testcase/demo01/` 的 log 必須叫 `demo01.log`）。

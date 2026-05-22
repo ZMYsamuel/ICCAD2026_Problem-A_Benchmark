@@ -6,7 +6,7 @@
 
 ## 設計目標
 
-1. **降低單一隊伍 eval set 的過擬合風險。** 來自多位貢獻者的對抗性測資，能覆蓋任何單一隊伍想不到的邊界情況。
+1. **降低單一隊伍 eval set 的 overfitting 風險。** 來自多位貢獻者的對抗性測資，能覆蓋任何單一隊伍想不到的邊界情況。
 2. **精確對應比賽的 I/O 格式**（見題目說明書 §3）。任何能通過這些 testcase 的系統，代表已正確接上比賽的評分系統。
 3. **足夠開放，歡迎所有隊伍與指導老師加入。** 公開授權（MIT），無 NDA，不限隊伍。
 
@@ -52,7 +52,7 @@ ICCAD2026_Problem-A_Benchmark/
 - **Python 3.7+** 才能執行 `runner/run_bench.py`。NTHU CAD 工作站預設的 `python3` 是 3.6，請改用 `python3.9`。
 - 你的系統所需的依賴（API key、`LD_LIBRARY_PATH` 等）必須在呼叫 runner 前設定好。Runner 會繼承 shell 的環境變數。
 
-## 快速開始 — 在本機執行 benchmark
+## 快速開始 — 在本地執行 benchmark
 
 ```bash
 # 1. 設定你的系統指令 — 必須使用「絕對路徑」，因為 runner 會在暫存目錄執行每個 testcase，
