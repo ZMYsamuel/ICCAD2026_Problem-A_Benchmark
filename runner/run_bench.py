@@ -95,7 +95,7 @@ def discover_cases(source: str, cases: Optional[list[str]]) -> list[Path]:
         if official.is_dir():
             roots.append(("official", official))
     if source in ("community", "personal", "all"):
-        community = REPO_ROOT / "tests"
+        community = REPO_ROOT / "community_testcase"
         if community.is_dir():
             roots.append(("community", community))
 
@@ -109,8 +109,7 @@ def discover_cases(source: str, cases: Optional[list[str]]) -> list[Path]:
             if not (d / "requests.txt").exists():
                 continue
             if cases:
-                name = d.name.replace("case_", "")
-                if name not in cases and d.name not in cases:
+                if d.name not in cases:
                     continue
             found.append(d)
     return found
@@ -130,7 +129,7 @@ def build_workdir(case_dir: Path, meta: dict, workdir: Path) -> None:
         tgt.symlink_to(src.resolve())
     else:
         # No meta. Default mount: copy the layout of the case_dir relative to
-        # repo_root. Works for community tests/case_<name>/design.v style.
+        # repo_root. Works for community_testcase/<name>/design.v style.
         rel = case_dir.relative_to(REPO_ROOT)
         for f in case_dir.iterdir():
             if f.is_file() and f.suffix == ".v":

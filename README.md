@@ -2,7 +2,13 @@
 
 A community submission archive for **ICCAD 2026 Problem A: LLM-Assisted Netlist Exploration and Transformation**.
 
-Each participant runs the testcases (official + community) through their own system, then submits the captured output here. By comparing submissions side-by-side, the class can cross-reference answers and reason about correctness without a single golden oracle.
+Each participant runs the testcases through their own system, then submits the captured output here. By comparing submissions side-by-side, the class can cross-reference answers and reason about correctness without a single golden oracle.
+
+## Goals
+
+1. **Reduce overfitting to a single team's eval set.** Adversarial testcases from many contributors cover corner cases no single team would think of alone.
+2. **Match the contest's I/O format exactly** (see §3 of the problem statement). Any system that passes these testcases is wired up correctly for the real evaluator.
+3. **Open enough to invite all teams and advisors.** Public, MIT-licensed, no NDA, no team-affiliation gating.
 
 ## Repository structure
 
@@ -18,8 +24,8 @@ ICCAD2026_Problem-A_Benchmark/
 │           ├── testNN.log      # REQUIRED — system output
 │           ├── *.v             # OPTIONAL — output Verilog
 │           └── submission.yaml # OPTIONAL — run metadata
-├── tests/                      # community-contributed testcases (anyone may add/edit)
-│   └── <case_folder>/
+├── community_testcase/         # community-contributed testcases (anyone may add/edit)
+│   └── <case_name>/
 │       ├── <case_name>.v       # netlist (any filename — at least one .v required)
 │       ├── requests.txt        # prompts; first line declares case_name
 │       ├── README.md           # OPTIONAL
@@ -32,15 +38,24 @@ ICCAD2026_Problem-A_Benchmark/
 └── LICENSE
 ```
 
+## Format conformance with the contest spec
+
+| Contest spec (problem statement §3) | This repo |
+|---|---|
+| System reads NL requests from **stdin**, one per line | `requests.txt` in each testcase folder is exactly that stream |
+| System writes responses to **stdout** delimited by `#RESPONSE <id>` / `#END <id>` | Submission log (`testNN.log` / `<case_name>.log`) must be in this exact format |
+| Per-prompt timeout: 60 s for basic ops, 300 s for others | `runner/run_bench.py` enforces both; marks per-prompt `status: timeout` |
+| Testcase begins with `This is the beginning of testcase <name>. …` | First line of every `requests.txt` follows this pattern |
+
 ## Quickstart — run the benchmark locally
 
 ```bash
-# 1. Set your system command
+# 1. Set your system command (or use the BENCH_SYSTEM_CMD env var)
 export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
 
-# 2. Run the runner against one or all testcases
-python3 runner/run_bench.py --source official --cases test01     # one official case
-python3 runner/run_bench.py --source community --cases case_demo01  # one community case
+# 2. Run the runner
+python3 runner/run_bench.py --source official --cases test01      # one official case
+python3 runner/run_bench.py --source community --cases demo01     # one community case
 python3 runner/run_bench.py --source all                          # everything
 
 # Output goes to: results/run_<timestamp>/<case>/system.log
@@ -50,13 +65,23 @@ python3 runner/run_bench.py --source all                          # everything
 #    See CONTRIBUTING.md for the full workflow.
 ```
 
-The runner reads each testcase's `meta.yaml` (if present) to set up the correct working directory, then invokes `$BENCH_SYSTEM_CMD` with each prompt from `requests.txt` in sequence.
+## `runner/run_bench.py` — CLI reference
+
+| Flag | Default | Description |
+|---|---|---|
+| `--system-cmd <str>` | `$BENCH_SYSTEM_CMD` env var, or `./your_team_alpha -config llm_config.yaml` | Shell command to invoke the system under test. The runner spawns this command per case in a temp workdir, pipes `requests.txt` to stdin, and reads `#RESPONSE`/`#END` lines from stdout. |
+| `--source <enum>` | `all` | Which corpus to draw cases from: `official` → `official_testcase/test*/`; `community` → `community_testcase/*/`; `all` → both. |
+| `--cases <csv>` | _(none — run all)_ | Comma-separated case names to run (e.g. `test01,test10,demo01`). |
+| `--output-dir <path>` | `results/run_<timestamp>/` | Override where the result book and per-case artifacts are written. |
+| `--list-only` | off | Print the discovered case directories and exit without running. Useful for sanity-checking selectors. |
+
+The runner inherits the shell's environment. Make sure any API keys and `LD_LIBRARY_PATH` settings your system needs are already exported before invoking the runner.
 
 ## Submitting your results
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for step-by-step instructions, including how to fork this repo and open a pull request.
 
-A GitHub Actions CI check validates the submission format automatically when you open a PR.
+A GitHub Actions CI check validates the submission format automatically when you open a PR. The check is structural only — it verifies folder names, required files, and log format; it is not a correctness gate.
 
 ## Traditional Chinese
 

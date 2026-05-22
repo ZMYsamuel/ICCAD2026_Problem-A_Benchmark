@@ -5,10 +5,10 @@ Reads PR_AUTHOR and BASE_SHA from the environment (set by the GitHub Actions
 workflow), classifies each changed file by path, then dispatches to the right
 validation flow:
 
-  official_testcase/<case>/<file>         -> reject (maintainer-owned, immutable)
+  official_testcase/<case>/<file>          -> reject (maintainer-owned, immutable)
   official_testcase/<case>/<user>/<file>  -> answer validation
-  tests/<case>/<file>                     -> community testcase folder validation
-  tests/<case>/<user>/<file>              -> answer validation
+  community_testcase/<case>/<file>        -> community testcase folder validation
+  community_testcase/<case>/<user>/<file> -> answer validation
   anything else                           -> reject
 
 Answer validation checks: folder name == PR_AUTHOR, <case_name>.log exists,
@@ -19,9 +19,8 @@ Testcase folder validation checks: requests.txt exists and at least one .v
 file is present. We do not parse requests.txt content — official and community
 testcases use different phrasings.
 
-The expected log filename is derived from the folder name, stripping an
-optional `case_` prefix: `official_testcase/test01/` -> test01.log,
-`tests/case_demo01/` -> demo01.log, `tests/foo/` -> foo.log.
+The expected log filename equals the folder name: `official_testcase/test01/` ->
+test01.log, `community_testcase/demo01/` -> demo01.log.
 
 Exit 0 on success, 1 on the first failure.
 """
@@ -36,7 +35,7 @@ from typing import List, Optional, Set, Tuple
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 OFFICIAL_ROOT  = "official_testcase"
-COMMUNITY_ROOT = "tests"
+COMMUNITY_ROOT = "community_testcase"
 
 RESPONSE_RE = re.compile(r"^#RESPONSE\s+(\d+)\s*$", re.MULTILINE)
 END_RE      = re.compile(r"^#END\s+(\d+)\s*$",      re.MULTILINE)
@@ -64,9 +63,8 @@ def count_prompts(requests_txt):
 
 def derive_log_name(case_folder):
     # type: (str) -> str
-    """tests/case_demo01/ -> demo01.log; official_testcase/test01/ -> test01.log."""
-    name = case_folder[len("case_"):] if case_folder.startswith("case_") else case_folder
-    return name + ".log"
+    """community_testcase/demo01/ -> demo01.log; official_testcase/test01/ -> test01.log."""
+    return case_folder + ".log"
 
 
 def validate_log(log_path, expected_count):

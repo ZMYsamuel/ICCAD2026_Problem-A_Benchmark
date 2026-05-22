@@ -5,8 +5,8 @@
 | 你要做的事 | 檔案放在哪 |
 |---|---|
 | 提交 **官方** testcase 的系統輸出 | `official_testcase/testNN/<your-github-username>/` |
-| 提交 **社群** testcase 的系統輸出 | `tests/<case_folder>/<your-github-username>/` |
-| 新增一個社群 testcase | `tests/<case_folder>/`（直接放在資料夾下） |
+| 提交 **社群** testcase 的系統輸出 | `community_testcase/<case_name>/<your-github-username>/` |
+| 新增一個社群 testcase | `community_testcase/<case_name>/`（直接放在資料夾下） |
 
 這三種可以在同一個 PR 裡混合提交。各自獨立 — 上傳 testcase 不用同時附答案，反之亦然。
 
@@ -18,7 +18,7 @@
 
 由 maintainer 持有。netlist、`requests.txt`、`meta.yaml`、`README.md` 都是鎖死的。投稿者只在裡面新增自己的答案子資料夾。
 
-### 社群 testcase 資料夾 — `tests/<case_folder>/`
+### 社群 testcase 資料夾 — `community_testcase/<case_name>/`
 
 任何人都可以新增、任何人都可以編輯。資料夾裡必須包含：
 
@@ -26,7 +26,7 @@
 - `requests.txt` — 你的 prompt，一行一題。內容自訂（比賽規則允許 prompt 引用任意的檔名）。
 - `README.md` — 選填。
 
-資料夾名自訂。`case_` 前綴是習慣但非必要（`tests/foo/` 和 `tests/case_foo/` 都接受）。
+資料夾名自訂。建議使用簡短、有描述性的名稱（例如 `my_dff_test`、`alu_fanout`）。
 
 ### 答案子資料夾 — `<root>/<case>/<your-github-username>/`
 
@@ -34,10 +34,9 @@
 - 必填檔案：`<case_name>.log` — 你的系統輸出，格式為 `#RESPONSE N` / `#END N` block。
 - 選填：任何輸出的 `*.v` 檔、任何 `submission.yaml`（執行資訊）。
 
-預期的 log 檔名由上層資料夾名推導出來，去掉 `case_` 前綴：
+預期的 log 檔名等於上層 case 資料夾名：
 - `official_testcase/test01/` → `test01.log`
-- `tests/case_demo01/` → `demo01.log`
-- `tests/foo/` → `foo.log`
+- `community_testcase/demo01/` → `demo01.log`
 
 ---
 
@@ -60,14 +59,14 @@ git checkout -b submission/<your-github-username>
 ```bash
 export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
 
-# 單一 testcase
+# 單一官方 testcase
 python3 runner/run_bench.py --source official --cases test01
 
 # 全部官方 testcase
 python3 runner/run_bench.py --source official
 
 # 社群 testcase
-python3 runner/run_bench.py --source community --cases case_demo01
+python3 runner/run_bench.py --source community --cases demo01
 ```
 
 Runner 會把輸出寫到 `results/run_<timestamp>/<case>/system.log`。`results/` 資料夾只留在你的本機 — 已在 `.gitignore` 裡。
@@ -87,9 +86,9 @@ cp ${RUN_DIR}/${CASE}/system.log \
    official_testcase/${CASE}/${USER}/${CASE}.log
 ```
 
-社群答案就把 root 換成 `tests/`，加上對應的 case 資料夾名。
+社群答案就把 root 換成 `community_testcase/`，加上對應的 case 資料夾名。
 
-新增社群 testcase 則直接在 `tests/<case_folder>/` 下建立 `.v` 和 `requests.txt`。
+新增社群 testcase 則直接在 `community_testcase/<case_name>/` 下建立 `.v` 和 `requests.txt`。
 
 可選擇在你的答案資料夾裡加入 `submission.yaml`，記錄執行資訊：
 
@@ -121,10 +120,10 @@ CI 對你的 PR 做結構檢查（資料夾名、必要檔案、log 格式），
 若 check fail 了，先讀錯誤訊息嘗試在本機修正。大多數錯誤都很單純：
 
 - 資料夾名與你的 GitHub login 不符 → 改名。
-- Log 檔名與預期不符 → 改名為 `<case_name>.log`（資料夾名去掉 `case_` 前綴）。
+- Log 檔名與預期不符 → 改名為 `<case_name>.log`（必須等於 case 資料夾名，例如 `community_testcase/demo01/` 的 log 必須叫 `demo01.log`）。
 - Log block ID 數量與 prompt 數量不符 → 重跑系統。
 
-如果你嘗試過了，覺得問題出在 benchmark 端（CI 報錯但你沒動到那個檔案、環境問題、在本機無法重現等），請在 PR comment 裡 tag `@ZMYsamuel`。
+如果你嘗試過了，覺得問題出在 benchmark 端，請在 PR comment 裡 tag `@ZMYsamuel`。
 
 ---
 

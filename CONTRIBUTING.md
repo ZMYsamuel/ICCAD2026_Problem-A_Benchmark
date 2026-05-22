@@ -5,8 +5,8 @@ There are three things you can contribute to this repo. The mechanics are the sa
 | What you want to do | Where the files go |
 |---|---|
 | Submit your system's answer to an **official** testcase | `official_testcase/testNN/<your-github-username>/` |
-| Submit your system's answer to a **community** testcase | `tests/<case_folder>/<your-github-username>/` |
-| Add a new community testcase | `tests/<case_folder>/` (directly) |
+| Submit your system's answer to a **community** testcase | `community_testcase/<case_name>/<your-github-username>/` |
+| Add a new community testcase | `community_testcase/<case_name>/` (directly) |
 
 You can mix any of these in a single PR. Each one is independent — uploading a testcase doesn't require uploading an answer at the same time, and vice versa.
 
@@ -18,7 +18,7 @@ You can mix any of these in a single PR. Each one is independent — uploading a
 
 Maintainer-owned. The netlist, `requests.txt`, `meta.yaml`, and `README.md` are locked. Submitters only add their own answer subfolder.
 
-### Community testcase folder — `tests/<case_folder>/`
+### Community testcase folder — `community_testcase/<case_name>/`
 
 Anyone can create, anyone can edit. The folder must contain:
 
@@ -26,7 +26,7 @@ Anyone can create, anyone can edit. The folder must contain:
 - `requests.txt` — your prompts, one per line. Content is up to you (the contest spec lets prompts reference any filenames you like).
 - `README.md` — optional.
 
-Folder name is up to you. A `case_` prefix is conventional but not required (`tests/foo/` and `tests/case_foo/` are both accepted).
+Folder name is up to you. Choose a short, descriptive name (e.g. `my_dff_test`, `alu_fanout`).
 
 ### Answer subfolder — `<root>/<case>/<your-github-username>/`
 
@@ -34,10 +34,9 @@ Folder name is up to you. A `case_` prefix is conventional but not required (`te
 - Required file: `<case_name>.log` — your system's captured output, formatted as `#RESPONSE N` / `#END N` blocks.
 - Optional: any output `*.v` files, any `submission.yaml` for run metadata.
 
-The expected log filename is derived from the parent folder name with any `case_` prefix stripped:
+The expected log filename equals the parent case folder name:
 - `official_testcase/test01/` → `test01.log`
-- `tests/case_demo01/` → `demo01.log`
-- `tests/foo/` → `foo.log`
+- `community_testcase/demo01/` → `demo01.log`
 
 ---
 
@@ -60,14 +59,14 @@ For an answer submission, run the benchmark runner against your system:
 ```bash
 export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
 
-# One testcase
+# One official testcase
 python3 runner/run_bench.py --source official --cases test01
 
 # All official testcases
 python3 runner/run_bench.py --source official
 
 # A community testcase
-python3 runner/run_bench.py --source community --cases case_demo01
+python3 runner/run_bench.py --source community --cases demo01
 ```
 
 The runner writes output to `results/run_<timestamp>/<case>/system.log`. The `results/` folder stays on your machine — it's gitignored.
@@ -87,9 +86,9 @@ cp ${RUN_DIR}/${CASE}/system.log \
    official_testcase/${CASE}/${USER}/${CASE}.log
 ```
 
-For a community answer, swap the root to `tests/` and use the community case folder name.
+For a community answer, swap the root to `community_testcase/` and use the community case folder name.
 
-For a new community testcase, create `tests/<case_folder>/` directly with your `.v` and `requests.txt`.
+For a new community testcase, create `community_testcase/<case_name>/` directly with your `.v` and `requests.txt`.
 
 Optionally add `submission.yaml` to your answer folder to record run metadata:
 
@@ -121,10 +120,10 @@ CI runs a structural check on your PR (folder names, required files, log format)
 If the check fails, read the error message and try to fix it locally. Most failures are simple:
 
 - Folder name doesn't match your GitHub login → rename.
-- Log filename doesn't match the expected name → rename to `<case_name>.log` (folder name with any `case_` prefix stripped).
+- Log filename doesn't match the expected name → rename to `<case_name>.log` (must equal the case folder name, e.g. `community_testcase/demo01/` expects `demo01.log`).
 - Log block IDs don't match prompt count → re-run the system.
 
-If you've tried and the error looks like a benchmark-side issue (a maintainer file CI flags that you didn't touch, an env problem, something that doesn't reproduce locally), ping `@ZMYsamuel` in the PR comments.
+If you've tried and the error looks like a benchmark-side issue, ping `@ZMYsamuel` in the PR comments.
 
 ---
 

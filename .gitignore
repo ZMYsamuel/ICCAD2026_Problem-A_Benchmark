@@ -6,7 +6,7 @@ results/
 # ...except logs inside testcase folders — both legacy golden.log and
 # multi-user submission logs are intentional content.
 !official_testcase/**/*.log
-!tests/**/*.log
+!community_testcase/**/*.log
 
 # Pyverilog parser cache (regenerated on first import)
 parser.out
