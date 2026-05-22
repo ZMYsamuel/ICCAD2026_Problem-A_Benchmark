@@ -1,4 +1,4 @@
-
+// intentional CI test edit — this file is maintainer-owned, should be rejected
 module top(n0, n1, n2, n3);
   input [2:0] n0;
   input [3:0] n1;
