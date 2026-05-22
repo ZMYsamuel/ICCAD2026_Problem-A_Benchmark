@@ -1,0 +1,6 @@
+system_name: cada1027_alpha
+version: v1
+commit_hash:
+run_timestamp: 20260522_181905
+notes: |
+  測試 test04 的提交，確保 benchmark repo 運作正常。提交的檔案經過檢查，沒發現問題，可視為正確答案。歡迎大家先以這個 test04 小測資做提交測試。
