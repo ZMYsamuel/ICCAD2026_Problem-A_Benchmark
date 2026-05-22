@@ -1,9 +1,10 @@
-name: Validate Submission Format
+name: Validate PR Contents
 
 on:
   pull_request:
     paths:
       - 'official_testcase/**'
+      - 'tests/**'
 
 jobs:
   validate:

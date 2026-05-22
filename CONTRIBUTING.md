@@ -1,167 +1,131 @@
 # Contributing
 
-This repo has two contribution tracks. Read the one that matches your goal.
+There are three things you can contribute to this repo. The mechanics are the same for all three — fork, branch, push, PR. Only the file you add changes.
+
+| What you want to do | Where the files go |
+|---|---|
+| Submit your system's answer to an **official** testcase | `official_testcase/testNN/<your-github-username>/` |
+| Submit your system's answer to a **community** testcase | `tests/<case_folder>/<your-github-username>/` |
+| Add a new community testcase | `tests/<case_folder>/` (directly) |
+
+You can mix any of these in a single PR. Each one is independent — uploading a testcase doesn't require uploading an answer at the same time, and vice versa.
 
 ---
 
-## Track 1 — Submit your system's output for official testcases
+## Folder rules
 
-This is the primary use case. You run your ICCAD 2026 system against the 40 official Cadence testcases, then submit the captured output so the class can cross-reference results.
+### Official testcase folder — `official_testcase/testNN/`
 
-### Prerequisites
+Maintainer-owned. The netlist, `requests.txt`, `meta.yaml`, and `README.md` are locked. Submitters only add their own answer subfolder.
 
-- A GitHub account.
-- Your ICCAD 2026 system ready to run (`$BENCH_SYSTEM_CMD`).
-- Basic familiarity with git and GitHub.
+### Community testcase folder — `tests/<case_folder>/`
 
-### Step 1: Fork and clone
+Anyone can create, anyone can edit. The folder must contain:
 
-1. Click **Fork** on the top-right of this repo's GitHub page.
-2. Clone your fork locally:
+- At least one `*.v` netlist file (any filename).
+- `requests.txt` — first line must declare the case_name, matching the folder name:
+  ```
+  This is the beginning of testcase <case_name>. Please output a copy of the log into <case_name>.log.
+  ```
+  `<case_name>` must equal the folder name. You may optionally use a `case_` prefix on the folder (e.g. folder `case_foo/` with `case_name` either `case_foo` or `foo`).
+- `README.md` — optional.
 
-   ```bash
-   git clone https://github.com/<your-github-username>/ICCAD2026_Problem-A_Benchmark.git
-   cd ICCAD2026_Problem-A_Benchmark
-   ```
+### Answer subfolder — `<root>/<case>/<your-github-username>/`
 
-### Step 2: Create a branch
+- The folder name must equal your GitHub username, exactly. CI uses the PR author's GitHub login as the source of truth.
+- Required file: `<case_name>.log` — your system's captured output, formatted as `#RESPONSE N` / `#END N` blocks.
+- Optional: any output `*.v` files, any `submission.yaml` for run metadata.
+
+`<case_name>` is whatever's declared in the parent folder's `requests.txt` first line — for `official_testcase/test01/` it's `test01`, for `tests/case_demo01/` it's `demo01`.
+
+---
+
+## Full workflow
+
+### Step 1 — Fork and clone
+
+Fork this repo via the GitHub UI, then:
 
 ```bash
+git clone https://github.com/<your-github-username>/ICCAD2026_Problem-A_Benchmark.git
+cd ICCAD2026_Problem-A_Benchmark
 git checkout -b submission/<your-github-username>
 ```
 
-### Step 3: Run the benchmark runner
+### Step 2 — Produce your output
+
+For an answer submission, run the benchmark runner against your system:
 
 ```bash
 export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
 
-# Run a single testcase
+# One testcase
 python3 runner/run_bench.py --source official --cases test01
 
-# Or run all 40 official testcases
+# All official testcases
 python3 runner/run_bench.py --source official
+
+# A community testcase
+python3 runner/run_bench.py --source community --cases case_demo01
 ```
 
-The runner writes output to `results/run_<timestamp>/testNN/system.log`.  
-The `results/` folder is gitignored — it stays on your machine only.
+The runner writes output to `results/run_<timestamp>/<case>/system.log`. The `results/` folder stays on your machine — it's gitignored.
 
-### Step 4: Copy the log into your submission folder
+For a new testcase contribution, just author the files directly.
+
+### Step 3 — Place the files
 
 ```bash
-# Replace test01 and <your-github-username> with the actual values
+# Answer submission (official example)
 CASE=test01
 USER=<your-github-username>
-RUN_DIR=$(ls -dt results/run_*/ | head -1)   # latest run
+RUN_DIR=$(ls -dt results/run_*/ | head -1)
 
 mkdir -p official_testcase/${CASE}/${USER}
-
 cp ${RUN_DIR}/${CASE}/system.log \
    official_testcase/${CASE}/${USER}/${CASE}.log
 ```
 
-Optionally add metadata:
+For a community answer, swap the root to `tests/` and use the community case folder name.
 
-```bash
-cat > official_testcase/${CASE}/${USER}/submission.yaml << 'EOF'
+For a new community testcase, create `tests/<case_folder>/` directly with your `.v` and `requests.txt`.
+
+Optionally add `submission.yaml` to your answer folder to record run metadata:
+
+```yaml
 system_name: cada0001_alpha
 version: v0.3.2
 commit_hash: abcdef0
 run_timestamp: 2026-05-25T14:30:00+08:00
 notes: |
   Optional free-form notes about this run.
-EOF
 ```
 
-You may also include output Verilog files (any filename, any `*.v`) if your system produced them — these are optional and not validated by CI.
-
-### Step 5: Commit and push
+### Step 4 — Commit and push
 
 ```bash
-git add official_testcase/${CASE}/${USER}/
-git commit -m "submission: ${USER} ${CASE}"
-git push origin submission/${USER}
+git add <the-files-you-added>
+git commit -m "submission: <your-github-username> test01"
+git push origin submission/<your-github-username>
 ```
 
-### Step 6: Open a pull request
+### Step 5 — Open a pull request
 
-1. Go to your fork on GitHub.
-2. Click **Compare & pull request**.
-3. Fill in the PR template checklist and submit.
+On your fork's GitHub page, click **Compare & pull request**. Fill in the PR template and submit.
 
-A CI check will automatically validate your submission format. Fix any reported errors before requesting a review.
+### Step 6 — If CI fails
 
-### Submission rules (enforced by CI)
+CI runs a structural check on your PR (folder names, required files, log format). It's not a correctness gate.
 
-| Rule | Detail |
-|------|--------|
-| Folder name | Must equal your GitHub login exactly (case-sensitive). |
-| Required file | `official_testcase/testNN/<your-username>/testNN.log` |
-| Log format | `#RESPONSE N` / `#END N` blocks, IDs 1, 2, …, K; K = number of prompts in `requests.txt`. |
-| Optional files | Any `*.v` file (any name); `submission.yaml`. CI does not validate their contents. |
-| Immutable files | Do not modify `testNN.v`, `requests.txt`, `README.md`, or `meta.yaml` inside any `official_testcase/testNN/`. CI will reject the PR. |
+If the check fails, read the error message and try to fix it locally. Most failures are simple:
+
+- Folder name doesn't match your GitHub login → rename.
+- Log block IDs don't match prompt count → re-run the system.
+- `requests.txt` case_name doesn't match folder name → fix the first line.
+
+If you've tried and the error looks like a benchmark-side issue (a maintainer file CI flags that you didn't touch, an env problem, something that doesn't reproduce locally), ping `@ZMYsamuel` in the PR comments.
 
 ---
-
-## Track 2 — Add a community testcase to `tests/`
-
-If you want to contribute a new testcase design and question set for others to use:
-
-### Layout
-
-Each testcase lives in `tests/case_<unique_name>/` with exactly four files:
-
-```
-tests/case_<unique_name>/
-├── design.v          # gate-level Verilog (REQUIRED)
-├── requests.txt      # NL requests, one per line (REQUIRED)
-├── golden.log        # reference responses (REQUIRED)
-└── README.md         # design description + question intent (REQUIRED)
-```
-
-### `design.v` requirements
-
-- Single top module per file (no hierarchy).
-- Primitive gates only: `and`, `or`, `not`, `nand`, `nor`, `xor`, `xnor`, `buf`, `dff`.
-- 2-input gates except `buf` / `not` (1 input).
-- DFF positional ports: `dff inst (q, d, clk, rst_n)`.
-- Must be parseable by [pyverilog](https://github.com/PyHDI/Pyverilog).
-
-### `requests.txt` requirements
-
-One natural-language request per line. Lines starting with `#` are treated as comments and skipped.
-
-**The first line must be:**
-
-```
-This is the beginning of testcase <case_name>. Please output a copy of the log into <case_name>.log.
-```
-
-### `golden.log` format
-
-```
-#RESPONSE 1
-<reference answer for prompt 1>
-#END 1
-#RESPONSE 2
-<reference answer for prompt 2>
-#END 2
-```
-
-- IDs start at 1, monotonically increasing.
-- Count of `#RESPONSE` blocks must match the non-comment line count in `requests.txt`.
-
-### PR process
-
-1. Fork → branch → add `tests/case_<name>/` with all 4 files.
-2. Open a PR. A maintainer will review the golden answers for correctness.
-3. On merge, the testcase becomes part of the public benchmark.
-
-### What makes a good community testcase?
-
-- At least one non-trivial query (path traversal, cone analysis, clock domain check).
-- Adversarial twists encouraged: dangling gates, constant outputs, multiple clock domains.
-- Avoid designs larger than ~1000 gates unless scale itself is the test.
-- Every golden answer must be justifiable step-by-step.
 
 ## License
 

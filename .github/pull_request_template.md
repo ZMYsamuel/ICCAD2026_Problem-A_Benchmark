@@ -1,35 +1,20 @@
-<!-- See CONTRIBUTING.md for full instructions on both contribution types. -->
+<!-- See CONTRIBUTING.md for full instructions. -->
 
-## What type of contribution is this?
+## What's in this PR?
 
-- [ ] Official testcase submission (Track 1)
-- [ ] Community testcase contribution (Track 2)
+Tick all that apply:
 
----
+- [ ] Answer submission for **official** testcase(s): <!-- e.g. test01, test05 -->
+- [ ] Answer submission for **community** testcase(s): <!-- e.g. case_demo01 -->
+- [ ] New community testcase(s): <!-- e.g. tests/case_foo/ -->
 
-## Track 1 — Official testcase submission
+## Checklist
 
-- [ ] My submission folder is named exactly after my GitHub username.
-- [ ] The required `official_testcase/testNN/<username>/testNN.log` file is present.
-- [ ] I have not modified any maintainer-owned files (`testNN.v`, `requests.txt`, `README.md`, `meta.yaml`).
-- [ ] I ran the system locally and confirmed it produced output before submitting.
-
-**Testcase(s) submitted:** <!-- e.g. test01, test02, test05 -->
-
----
-
-## Track 2 — Community testcase contribution
-
-- [ ] Created `tests/case_<name>/design.v`, `requests.txt`, `golden.log`, and `README.md`.
-- [ ] `requests.txt` first line follows the format: `This is the beginning of testcase <case_name>. Please output a copy of the log into <case_name>.log.`
-- [ ] Number of `#RESPONSE` blocks in `golden.log` equals the number of non-comment lines in `requests.txt`.
-- [ ] Each `#RESPONSE N` has a matching `#END N`.
-- [ ] `design.v` is flat (single top module), uses primitive gates only, parseable by pyverilog.
-- [ ] I can justify every golden answer.
-- [ ] No closed-source IP, copyrighted designs, or NDA-protected material.
-
----
+- [ ] All answer subfolders are named exactly after my GitHub username.
+- [ ] Each answer subfolder contains the required `<case_name>.log`.
+- [ ] I did not modify maintainer-owned files inside `official_testcase/<test>/`.
+- [ ] For any new community testcase: `requests.txt` first line declares a case_name matching the folder name, and at least one `.v` netlist file is present.
 
 ## Notes
 
-<!-- Anything the reviewer should know — design quirks, submission issues, etc. -->
+<!-- Anything the reviewer should know — design quirks, submission issues, system version, etc. -->

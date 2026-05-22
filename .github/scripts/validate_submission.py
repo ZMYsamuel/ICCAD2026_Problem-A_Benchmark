@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
-"""CI validator for official testcase submissions.
+"""CI validator for benchmark contributions.
 
 Reads PR_AUTHOR and BASE_SHA from the environment (set by the GitHub Actions
-workflow), then checks every changed file against the submission rules:
+workflow), classifies each changed file by path, then dispatches to the right
+validation flow:
 
-  1. All changed paths must be under official_testcase/.
-  2. Maintainer-owned files (testNN.v, requests.txt, README.md, meta.yaml)
-     cannot be modified.
-  3. Every other changed path must be inside a folder whose name matches the
-     PR author's GitHub login.
-  4. For each (testNN, user) pair touched by the PR, testNN.log must exist
-     and contain correctly paired #RESPONSE N / #END N blocks whose count
-     equals the number of prompts in requests.txt.
+  official_testcase/<case>/<file>         -> reject (maintainer-owned, immutable)
+  official_testcase/<case>/<user>/<file>  -> answer validation
+  tests/<case>/<file>                     -> community testcase folder validation
+  tests/<case>/<user>/<file>              -> answer validation
+  anything else                           -> reject
+
+Answer validation checks: folder name == PR_AUTHOR, <case_name>.log exists,
+and #RESPONSE N / #END N blocks pair up with ids 1..K, where K equals the
+non-comment line count of requests.txt.
+
+Testcase folder validation checks: requests.txt exists, at least one .v file
+exists, and the case_name declared in requests.txt first line matches the
+folder name (with or without `case_` prefix).
 
 Exit 0 on success, 1 on the first failure.
 """
@@ -25,13 +31,16 @@ from typing import List, Optional, Set, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
-MAINTAINER_FILES = {"requests.txt", "README.md", "meta.yaml"}
+OFFICIAL_ROOT  = "official_testcase"
+COMMUNITY_ROOT = "tests"
 
 RESPONSE_RE = re.compile(r"^#RESPONSE\s+(\d+)\s*$", re.MULTILINE)
 END_RE      = re.compile(r"^#END\s+(\d+)\s*$",      re.MULTILINE)
+CASE_NAME_RE = re.compile(r"testcase\s+(\S+?)\s*\.", re.IGNORECASE)
 
 
-def get_changed_files(base_sha: str) -> List[str]:
+def get_changed_files(base_sha):
+    # type: (str) -> List[str]
     result = subprocess.run(
         ["git", "diff", "--name-only", "--diff-filter=ACMR", "{}...HEAD".format(base_sha)],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -40,7 +49,8 @@ def get_changed_files(base_sha: str) -> List[str]:
     return [f for f in result.stdout.splitlines() if f.strip()]
 
 
-def count_prompts(requests_txt: Path) -> int:
+def count_prompts(requests_txt):
+    # type: (Path) -> int
     count = 0
     for line in requests_txt.read_text(encoding="utf-8").splitlines():
         line = line.strip()
@@ -49,7 +59,21 @@ def count_prompts(requests_txt: Path) -> int:
     return count
 
 
-def validate_log(log_path: Path, expected_count: int) -> Optional[str]:
+def parse_case_name(requests_txt):
+    # type: (Path) -> Optional[str]
+    """Extract <case_name> from a requests.txt first line of the form
+    'This is the beginning of [a new ]testcase <case_name>. ...'."""
+    for line in requests_txt.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        m = CASE_NAME_RE.search(line)
+        return m.group(1) if m else None
+    return None
+
+
+def validate_log(log_path, expected_count):
+    # type: (Path, int) -> Optional[str]
     """Return an error string, or None if the log is valid."""
     text = log_path.read_text(encoding="utf-8")
 
@@ -57,18 +81,68 @@ def validate_log(log_path: Path, expected_count: int) -> Optional[str]:
     end_ids      = [int(m) for m in END_RE.findall(text)]
 
     if response_ids != end_ids:
-        return (f"mismatched #RESPONSE / #END markers: "
-                f"RESPONSE ids={response_ids}, END ids={end_ids}")
+        return ("mismatched #RESPONSE / #END markers: "
+                "RESPONSE ids={}, END ids={}".format(response_ids, end_ids))
 
     expected_ids = list(range(1, expected_count + 1))
     if response_ids != expected_ids:
-        return (f"expected {expected_count} response block(s) with ids {expected_ids}, "
-                f"got {response_ids}")
+        return ("expected {} response block(s) with ids {}, "
+                "got {}".format(expected_count, expected_ids, response_ids))
 
     return None
 
 
-def main() -> int:
+def validate_answer(root, case, user):
+    # type: (str, str, str) -> Optional[str]
+    """Validate that <root>/<case>/<user>/<case_name>.log exists and is well-formed."""
+    requests_path = REPO_ROOT / root / case / "requests.txt"
+    if not requests_path.exists():
+        return ("requests.txt not found for {}/{} — is the testcase installed?"
+                .format(root, case))
+
+    case_name = parse_case_name(requests_path)
+    if not case_name:
+        return ("cannot parse case_name from {}/{}/requests.txt first line"
+                .format(root, case))
+
+    log_path = REPO_ROOT / root / case / user / (case_name + ".log")
+    if not log_path.exists():
+        return ("required log file missing: {}/{}/{}/{}.log"
+                .format(root, case, user, case_name))
+
+    return validate_log(log_path, count_prompts(requests_path))
+
+
+def validate_testcase_folder(root, case):
+    # type: (str, str) -> Optional[str]
+    """Validate that <root>/<case>/ contains requests.txt + at least one .v
+    and that case_name matches folder name."""
+    case_dir = REPO_ROOT / root / case
+    requests_path = case_dir / "requests.txt"
+
+    if not requests_path.exists():
+        return "testcase folder {}/{} missing requests.txt".format(root, case)
+
+    v_files = [p for p in case_dir.iterdir() if p.is_file() and p.suffix == ".v"]
+    if not v_files:
+        return "testcase folder {}/{} contains no .v netlist file".format(root, case)
+
+    case_name = parse_case_name(requests_path)
+    if not case_name:
+        return ("cannot parse case_name from {}/{}/requests.txt first line"
+                .format(root, case))
+
+    folder_without_prefix = case[len("case_"):] if case.startswith("case_") else case
+    if case_name != case and case_name != folder_without_prefix:
+        return ("case_name '{}' declared in requests.txt does not match "
+                "folder name '{}' (also tried '{}')"
+                .format(case_name, case, folder_without_prefix))
+
+    return None
+
+
+def main():
+    # type: () -> int
     pr_author = os.environ.get("PR_AUTHOR", "").strip()
     base_sha  = os.environ.get("BASE_SHA", "").strip()
 
@@ -82,74 +156,63 @@ def main() -> int:
     try:
         changed_files = get_changed_files(base_sha)
     except subprocess.CalledProcessError as e:
-        print(f"ERROR: git diff failed: {e.stderr}")
+        print("ERROR: git diff failed: {}".format(e.stderr))
         return 1
 
     if not changed_files:
-        print("OK: no changed files in official_testcase/ — nothing to validate.")
+        print("OK: no changed files to validate.")
         return 0
 
-    # (testNN, user) pairs we need to fully validate
-    submission_pairs = set()  # type: Set[Tuple[str, str]]
+    answer_pairs   = set()  # type: Set[Tuple[str, str, str]]   # (root, case, user)
+    testcase_pairs = set()  # type: Set[Tuple[str, str]]        # (root, case)
 
     for path_str in changed_files:
-        # Rule 1: must be inside official_testcase/
-        if not path_str.startswith("official_testcase/"):
-            print(f"ERROR: submission PR touched non-submission path: {path_str}")
-            return 1
-
         parts = path_str.split("/")
-        # parts[0]="official_testcase", parts[1]=testNN, parts[2]=user_or_maintainer_file, ...
-        if len(parts) < 3:
-            print(f"ERROR: unexpected path (too shallow): {path_str}")
+        if len(parts) < 3 or parts[0] not in (OFFICIAL_ROOT, COMMUNITY_ROOT):
+            print("ERROR: PR touched non-submission path: {}".format(path_str))
             return 1
 
-        testnn   = parts[1]
-        sub_name = parts[2]  # either a maintainer file or the user folder name
+        root = parts[0]
+        case = parts[1]
 
-        # Rule 2: maintainer-owned files at official_testcase/testNN/<file>
+        # Path depth tells us if this is a maintainer-level file or in a user folder.
+        # depth == 3: official_testcase/<case>/<file>     OR  tests/<case>/<file>
+        # depth >= 4: official_testcase/<case>/<user>/... OR  tests/<case>/<user>/...
         if len(parts) == 3:
-            # Direct child of testNN/ — might be a maintainer file
-            filename = parts[2]
-            if filename in MAINTAINER_FILES or filename == f"{testnn}.v":
-                print(f"ERROR: cannot modify maintainer-owned file: {path_str}")
+            if root == OFFICIAL_ROOT:
+                print("ERROR: cannot modify maintainer-owned file in official_testcase: {}"
+                      .format(path_str))
                 return 1
-            # If it's neither a maintainer file nor a directory entry, it's unexpected.
-            # We still fall through to the user-folder check below.
+            # Community testcase folder — anyone may add/edit
+            testcase_pairs.add((root, case))
+        else:
+            user_folder = parts[2]
+            if user_folder != pr_author:
+                print("ERROR: submission folder '{}' does not match "
+                      "PR author '{}' (path: {})"
+                      .format(user_folder, pr_author, path_str))
+                return 1
+            answer_pairs.add((root, case, pr_author))
 
-        # Rule 3: the second-level folder must equal PR_AUTHOR
-        user_folder = sub_name
-        if user_folder != pr_author:
-            print(f"ERROR: submission folder '{user_folder}' does not match "
-                  f"PR author '{pr_author}'")
-            return 1
-
-        submission_pairs.add((testnn, pr_author))
-
-    # Rule 4: validate each (testNN, user) pair
-    for testnn, user in sorted(submission_pairs):
-        log_path      = REPO_ROOT / "official_testcase" / testnn / user / f"{testnn}.log"
-        requests_path = REPO_ROOT / "official_testcase" / testnn / "requests.txt"
-
-        if not log_path.exists():
-            print(f"ERROR: required log file missing: "
-                  f"official_testcase/{testnn}/{user}/{testnn}.log")
-            return 1
-
-        if not requests_path.exists():
-            print(f"ERROR: requests.txt not found for {testnn} — "
-                  f"is the testcase correctly installed?")
-            return 1
-
-        expected_count = count_prompts(requests_path)
-        err = validate_log(log_path, expected_count)
+    # Validate community testcase folders first (an answer to a malformed testcase
+    # would fail later anyway, but the folder error is more informative).
+    for root, case in sorted(testcase_pairs):
+        err = validate_testcase_folder(root, case)
         if err:
-            print(f"ERROR: {testnn}/{user}/{testnn}.log — {err}")
+            print("ERROR: {}".format(err))
             return 1
 
-    n_files = len(changed_files)
-    n_pairs = len(submission_pairs)
-    print(f"OK: validated {n_files} file(s) across {n_pairs} testcase/user pair(s).")
+    for root, case, user in sorted(answer_pairs):
+        err = validate_answer(root, case, user)
+        if err:
+            print("ERROR: {}".format(err))
+            return 1
+
+    n_files     = len(changed_files)
+    n_answers   = len(answer_pairs)
+    n_testcases = len(testcase_pairs)
+    print("OK: validated {} file(s) — {} answer pair(s), {} testcase folder(s)."
+          .format(n_files, n_answers, n_testcases))
     return 0
 
 

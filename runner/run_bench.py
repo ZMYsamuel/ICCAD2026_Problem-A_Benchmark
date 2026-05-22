@@ -106,8 +106,6 @@ def discover_cases(source: str, cases: Optional[list[str]]) -> list[Path]:
                 continue
             if tag == "official" and not d.name.startswith("test"):
                 continue
-            if tag == "community" and not d.name.startswith("case_"):
-                continue
             if not (d / "requests.txt").exists():
                 continue
             if cases:

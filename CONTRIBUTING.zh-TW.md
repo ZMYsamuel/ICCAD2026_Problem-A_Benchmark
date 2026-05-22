@@ -1,168 +1,132 @@
 # 貢獻指南
 
-這個 repo 有兩種貢獻方式，請根據你的目的閱讀對應的章節。
+這個 repo 可以貢獻三種內容，流程都一樣 — fork、branch、push、PR — 差別只在你新增的檔案放在哪裡。
+
+| 你要做的事 | 檔案放在哪 |
+|---|---|
+| 提交 **官方** testcase 的系統輸出 | `official_testcase/testNN/<your-github-username>/` |
+| 提交 **社群** testcase 的系統輸出 | `tests/<case_folder>/<your-github-username>/` |
+| 新增一個社群 testcase | `tests/<case_folder>/`（直接放在資料夾下） |
+
+這三種可以在同一個 PR 裡混合提交。各自獨立 — 上傳 testcase 不用同時附答案，反之亦然。
 
 ---
 
-## Track 1 — 提交官方 testcase 的系統輸出
+## 資料夾規則
 
-這是主要的使用場景。你將 40 個官方 Cadence testcase 跑過自己的 ICCAD 2026 系統，然後把輸出結果提交到這個 repo，讓大家可以交叉比對結果。
+### 官方 testcase 資料夾 — `official_testcase/testNN/`
 
-### 前置條件
+由 maintainer 持有。netlist、`requests.txt`、`meta.yaml`、`README.md` 都是鎖死的。投稿者只在裡面新增自己的答案子資料夾。
 
-- 一個 GitHub 帳號。
-- 你的 ICCAD 2026 系統已經可以執行（`$BENCH_SYSTEM_CMD`）。
-- 對 git 和 GitHub 有基本認識。
+### 社群 testcase 資料夾 — `tests/<case_folder>/`
 
-### Step 1：Fork 並 clone
+任何人都可以新增、任何人都可以編輯。資料夾裡必須包含：
 
-1. 在這個 repo 的 GitHub 頁面右上角點擊 **Fork**。
-2. 將你的 fork clone 到本機：
+- 至少一個 `*.v` netlist 檔（檔名不限）。
+- `requests.txt` — 第一行必須宣告 case_name，並與資料夾名一致：
+  ```
+  This is the beginning of testcase <case_name>. Please output a copy of the log into <case_name>.log.
+  ```
+  `<case_name>` 必須等於資料夾名。資料夾可選擇加 `case_` 前綴（例如 `case_foo/`，那 `<case_name>` 可以是 `case_foo` 或 `foo`）。
+- `README.md` — 選填。
 
-   ```bash
-   git clone https://github.com/<your-github-username>/ICCAD2026_Problem-A_Benchmark.git
-   cd ICCAD2026_Problem-A_Benchmark
-   ```
+### 答案子資料夾 — `<root>/<case>/<your-github-username>/`
 
-### Step 2：建立 branch
+- 資料夾名必須與你的 GitHub 帳號完全一致。CI 用 PR author 的 GitHub login 作為基準。
+- 必填檔案：`<case_name>.log` — 你的系統輸出，格式為 `#RESPONSE N` / `#END N` block。
+- 選填：任何輸出的 `*.v` 檔、任何 `submission.yaml`（執行資訊）。
+
+`<case_name>` 來自上層資料夾的 `requests.txt` 第一行宣告 — `official_testcase/test01/` 就是 `test01`，`tests/case_demo01/` 就是 `demo01`。
+
+---
+
+## 完整流程
+
+### Step 1 — Fork 並 clone
+
+在 GitHub UI 上 fork 這個 repo，然後：
 
 ```bash
+git clone https://github.com/<your-github-username>/ICCAD2026_Problem-A_Benchmark.git
+cd ICCAD2026_Problem-A_Benchmark
 git checkout -b submission/<your-github-username>
 ```
 
-### Step 3：執行 benchmark runner
+### Step 2 — 產生你的輸出
+
+若是答案投稿，用 benchmark runner 對你的系統執行：
 
 ```bash
 export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
 
-# 執行單一 testcase
+# 單一 testcase
 python3 runner/run_bench.py --source official --cases test01
 
-# 或是執行全部 40 個官方 testcase
+# 全部官方 testcase
 python3 runner/run_bench.py --source official
+
+# 社群 testcase
+python3 runner/run_bench.py --source community --cases case_demo01
 ```
 
-Runner 會把輸出寫到 `results/run_<timestamp>/testNN/system.log`。  
-`results/` 資料夾已加入 `.gitignore`，只會留在你的本機，不會被 push 到 repo。
+Runner 會把輸出寫到 `results/run_<timestamp>/<case>/system.log`。`results/` 資料夾只留在你的本機 — 已在 `.gitignore` 裡。
 
-### Step 4：將 log 複製到你的 submission 資料夾
+若是新增 testcase 投稿，直接寫檔案就好。
+
+### Step 3 — 把檔案放到對的位置
 
 ```bash
-# 把 test01 和 <your-github-username> 換成實際的值
+# 答案投稿（以官方 testcase 為例）
 CASE=test01
 USER=<your-github-username>
-RUN_DIR=$(ls -dt results/run_*/ | head -1)   # 最新的執行結果
+RUN_DIR=$(ls -dt results/run_*/ | head -1)
 
 mkdir -p official_testcase/${CASE}/${USER}
-
 cp ${RUN_DIR}/${CASE}/system.log \
    official_testcase/${CASE}/${USER}/${CASE}.log
 ```
 
-你也可以選擇加入執行資訊：
+社群答案就把 root 換成 `tests/`，加上對應的 case 資料夾名。
 
-```bash
-cat > official_testcase/${CASE}/${USER}/submission.yaml << 'EOF'
+新增社群 testcase 則直接在 `tests/<case_folder>/` 下建立 `.v` 和 `requests.txt`。
+
+可選擇在你的答案資料夾裡加入 `submission.yaml`，記錄執行資訊：
+
+```yaml
 system_name: cada0001_alpha
 version: v0.3.2
 commit_hash: abcdef0
 run_timestamp: 2026-05-25T14:30:00+08:00
 notes: |
   對這次執行的補充說明（選填）。
-EOF
 ```
 
-如果你的系統有輸出 Verilog 檔案（任何檔名的 `*.v`），也可以一起放進去 — 這是選填的，CI 不會驗證其內容。
-
-### Step 5：Commit 並 push
+### Step 4 — Commit 並 push
 
 ```bash
-git add official_testcase/${CASE}/${USER}/
-git commit -m "submission: ${USER} ${CASE}"
-git push origin submission/${USER}
+git add <你新增的檔案>
+git commit -m "submission: <your-github-username> test01"
+git push origin submission/<your-github-username>
 ```
 
-### Step 6：開 pull request
+### Step 5 — 開 pull request
 
-1. 到你的 fork 的 GitHub 頁面。
-2. 點擊 **Compare & pull request**。
-3. 填寫 PR template 的 checklist 後送出。
+在你的 fork GitHub 頁面點擊 **Compare & pull request**，填好 PR template 後送出。
 
-CI 會自動驗證 submission 格式，如果有錯誤請修正後再請 maintainer review。
+### Step 6 — 若 CI 失敗
 
-### Submission 規則（CI 自動執行）
+CI 對你的 PR 做結構檢查（資料夾名、必要檔案、log 格式），不是正確性檢查。
 
-| 規則 | 說明 |
-|------|------|
-| 資料夾名稱 | 必須與你的 GitHub 帳號完全一致（大小寫敏感）。 |
-| 必填檔案 | `official_testcase/testNN/<your-username>/testNN.log` |
-| Log 格式 | `#RESPONSE N` / `#END N` block，ID 從 1 開始遞增到 K；K = `requests.txt` 中的題目數。 |
-| 選填檔案 | 任意 `*.v` 檔案（任意檔名）；`submission.yaml`。CI 不驗證其內容。 |
-| 禁止修改 | 不可更動任何 `official_testcase/testNN/` 下的 `testNN.v`、`requests.txt`、`README.md`、`meta.yaml`，CI 會拒絕這類 PR。 |
+若 check fail 了，先讀錯誤訊息嘗試在本機修正。大多數錯誤都很單純：
+
+- 資料夾名與你的 GitHub login 不符 → 改名。
+- Log block ID 數量與 prompt 數量不符 → 重跑系統。
+- `requests.txt` 的 case_name 與資料夾名不符 → 改第一行。
+
+如果你嘗試過了，覺得問題出在 benchmark 端（CI 報錯但你沒動到那個檔案、環境問題、在本機無法重現等），請在 PR comment 裡 tag `@ZMYsamuel`。
 
 ---
 
-## Track 2 — 新增社群 testcase 到 `tests/`
-
-如果你想貢獻新的 testcase 設計和題目讓大家使用：
-
-### 資料夾結構
-
-每個 testcase 放在 `tests/case_<unique_name>/`，必須包含以下四個檔案：
-
-```
-tests/case_<unique_name>/
-├── design.v          # Gate-level Verilog（必填）
-├── requests.txt      # NL 題目，每行一題（必填）
-├── golden.log        # 參考答案（必填）
-└── README.md         # 電路說明 + 題目說明（必填）
-```
-
-### `design.v` 要求
-
-- 單一 top module（不允許階層式架構）。
-- 只能使用 primitive gate：`and`、`or`、`not`、`nand`、`nor`、`xor`、`xnor`、`buf`、`dff`。
-- Gate 為 2-input，`buf` / `not` 為 1-input。
-- DFF positional port 順序：`dff inst (q, d, clk, rst_n)`。
-- 必須可以被 [pyverilog](https://github.com/PyHDI/Pyverilog) parse。
-
-### `requests.txt` 要求
-
-每行一個自然語言題目，`#` 開頭的行視為注釋並跳過。
-
-**第一行必須是：**
-
-```
-This is the beginning of testcase <case_name>. Please output a copy of the log into <case_name>.log.
-```
-
-### `golden.log` 格式
-
-```
-#RESPONSE 1
-<題目 1 的參考答案>
-#END 1
-#RESPONSE 2
-<題目 2 的參考答案>
-#END 2
-```
-
-- ID 從 1 開始遞增。
-- `#RESPONSE` block 數量必須與 `requests.txt` 中非注釋行數一致。
-
-### PR 流程
-
-1. Fork → 建 branch → 新增 `tests/case_<name>/`（含四個檔案）。
-2. 開 PR。Maintainer 會 review golden answer 的正確性。
-3. Merge 後，testcase 正式加入公開 benchmark。
-
-### 好的 community testcase 應該具備
-
-- 至少一個非 trivial 的 query（路徑查詢、cone 分析、clock domain 確認）。
-- 歡迎設計刁鑽的測試：dangling gate、constant output、多個 clock domain。
-- 避免超過約 1000 個 gate 的大型設計，除非「規模本身」就是測試重點。
-- 每個 golden answer 都必須可以逐步推導出來。
-
 ## 授權
 
-提交貢獻即表示你同意將你的內容以 repo 的 MIT license 公開發布。
+提交貢獻即表示你同意將內容以 repo 的 MIT license 公開發布。
