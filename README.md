@@ -1,5 +1,9 @@
 # ICCAD 2026 Problem A — Benchmark
 
+[![Validate PR Contents](https://github.com/ZMYsamuel/ICCAD2026_Problem-A_Benchmark/actions/workflows/submission-validate.yml/badge.svg)](https://github.com/ZMYsamuel/ICCAD2026_Problem-A_Benchmark/actions/workflows/submission-validate.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 A community submission archive for **ICCAD 2026 Problem A: LLM-Assisted Netlist Exploration and Transformation**.
 
 Each participant runs the testcases through their own system, then submits the captured output here. By comparing submissions side-by-side, the class can cross-reference answers and reason about correctness without a single golden oracle.

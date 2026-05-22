@@ -1,5 +1,9 @@
 # ICCAD 2026 Problem A — Benchmark
 
+[![Validate PR Contents](https://github.com/ZMYsamuel/ICCAD2026_Problem-A_Benchmark/actions/workflows/submission-validate.yml/badge.svg)](https://github.com/ZMYsamuel/ICCAD2026_Problem-A_Benchmark/actions/workflows/submission-validate.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 這是 **ICCAD 2026 Problem A: LLM-Assisted Netlist Exploration and Transformation** 的社群 submission 存檔。
 
 每位參賽者將 testcase 跑過自己的系統，然後把輸出結果提交到這個 repo。大家可以透過比對彼此的 submission，在沒有單一 golden answer 的情況下，交叉參照來推斷答案是否正確。

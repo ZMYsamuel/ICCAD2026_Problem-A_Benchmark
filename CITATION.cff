@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+title: "ICCAD 2026 Problem A — Community Benchmark"
+message: "If you use this benchmark for research, please cite it as below."
+type: dataset
+authors:
+  - alias: ZMYsamuel
+    # TODO: fill in once you're comfortable making your full name public:
+    # family-names: <YOUR_FAMILY_NAME>
+    # given-names:  <YOUR_GIVEN_NAMES>
+    # affiliation:  <YOUR_INSTITUTION>
+    # orcid:        <YOUR_ORCID_IF_ANY>
+repository-code: "https://github.com/ZMYsamuel/ICCAD2026_Problem-A_Benchmark"
+license: MIT
+keywords:
+  - iccad-2026
+  - eda
+  - llm
+  - netlist
+  - verilog
+  - benchmark
