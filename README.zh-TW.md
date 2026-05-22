@@ -6,7 +6,7 @@
 
 ## 設計目標
 
-1. **降低單一隊伍 eval set 的過擬合風險。** 來自多位貢獻者的對抗性測資，能覆蓋任何單一隊伍想不到的邊界情況。
+1. **降低單一隊伍 eval set 的 overfitting 風險。** 來自多位貢獻者的對抗性測資，能覆蓋任何單一隊伍想不到的邊界情況。
 2. **精確對應比賽的 I/O 格式**（見題目說明書 §3）。任何能通過這些 testcase 的系統，代表已正確接上比賽的評分系統。
 3. **足夠開放，歡迎所有隊伍與指導老師加入。** 公開授權（MIT），無 NDA，不限隊伍。
 
@@ -47,7 +47,7 @@ ICCAD2026_Problem-A_Benchmark/
 | 每題限時：basic 操作 60 秒，其他 300 秒 | `runner/run_bench.py` 強制執行，並標記 `status: timeout` |
 | Testcase 以 `This is the beginning of testcase <name>. …` 開頭 | 每個 `requests.txt` 的第一行皆遵循此格式 |
 
-## 快速開始 — 在本機執行 benchmark
+## 快速開始 — 在本地執行 benchmark
 
 ```bash
 # 1. 設定你的系統指令（或使用 BENCH_SYSTEM_CMD 環境變數）
