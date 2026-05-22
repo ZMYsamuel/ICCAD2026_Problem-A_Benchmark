@@ -1,0 +1,19 @@
+# Maintainer-owned paths. PRs touching these auto-request review from the owner.
+# This is complementary to validate_submission.py — CI rejects such changes,
+# CODEOWNERS makes sure they are also flagged for human review.
+
+# Official testcase artifacts (testNN.v / requests.txt / meta.yaml / README.md)
+/official_testcase/*/*.v            @ZMYsamuel
+/official_testcase/*/requests.txt   @ZMYsamuel
+/official_testcase/*/meta.yaml      @ZMYsamuel
+/official_testcase/*/README.md      @ZMYsamuel
+
+# CI, validation logic, and repo-level config
+/.github/                           @ZMYsamuel
+/runner/                            @ZMYsamuel
+/CONTRIBUTING.md                    @ZMYsamuel
+/CONTRIBUTING.zh-TW.md              @ZMYsamuel
+/README.md                          @ZMYsamuel
+/README.zh-TW.md                    @ZMYsamuel
+/LICENSE                            @ZMYsamuel
+/CITATION.cff                       @ZMYsamuel

@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Keep GitHub Actions (actions/checkout, actions/setup-python, ...) up to date.
+  # Dependabot opens a PR when a newer minor/patch is available; the validate
+  # workflow runs against the PR like any other change.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "dependencies"
+      - "github-actions"
