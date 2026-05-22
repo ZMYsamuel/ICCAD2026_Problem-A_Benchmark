@@ -15,9 +15,13 @@ Answer validation checks: folder name == PR_AUTHOR, <case_name>.log exists,
 and #RESPONSE N / #END N blocks pair up with ids 1..K, where K equals the
 non-comment line count of requests.txt.
 
-Testcase folder validation checks: requests.txt exists, at least one .v file
-exists, and the case_name declared in requests.txt first line matches the
-folder name (with or without `case_` prefix).
+Testcase folder validation checks: requests.txt exists and at least one .v
+file is present. We do not parse requests.txt content — official and community
+testcases use different phrasings.
+
+The expected log filename is derived from the folder name, stripping an
+optional `case_` prefix: `official_testcase/test01/` -> test01.log,
+`tests/case_demo01/` -> demo01.log, `tests/foo/` -> foo.log.
 
 Exit 0 on success, 1 on the first failure.
 """
@@ -36,7 +40,6 @@ COMMUNITY_ROOT = "tests"
 
 RESPONSE_RE = re.compile(r"^#RESPONSE\s+(\d+)\s*$", re.MULTILINE)
 END_RE      = re.compile(r"^#END\s+(\d+)\s*$",      re.MULTILINE)
-CASE_NAME_RE = re.compile(r"testcase\s+(\S+?)\s*\.", re.IGNORECASE)
 
 
 def get_changed_files(base_sha):
@@ -59,17 +62,11 @@ def count_prompts(requests_txt):
     return count
 
 
-def parse_case_name(requests_txt):
-    # type: (Path) -> Optional[str]
-    """Extract <case_name> from a requests.txt first line of the form
-    'This is the beginning of [a new ]testcase <case_name>. ...'."""
-    for line in requests_txt.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        m = CASE_NAME_RE.search(line)
-        return m.group(1) if m else None
-    return None
+def derive_log_name(case_folder):
+    # type: (str) -> str
+    """tests/case_demo01/ -> demo01.log; official_testcase/test01/ -> test01.log."""
+    name = case_folder[len("case_"):] if case_folder.startswith("case_") else case_folder
+    return name + ".log"
 
 
 def validate_log(log_path, expected_count):
@@ -94,49 +91,31 @@ def validate_log(log_path, expected_count):
 
 def validate_answer(root, case, user):
     # type: (str, str, str) -> Optional[str]
-    """Validate that <root>/<case>/<user>/<case_name>.log exists and is well-formed."""
+    """Validate that <root>/<case>/<user>/<log_name> exists and is well-formed."""
     requests_path = REPO_ROOT / root / case / "requests.txt"
     if not requests_path.exists():
         return ("requests.txt not found for {}/{} — is the testcase installed?"
                 .format(root, case))
 
-    case_name = parse_case_name(requests_path)
-    if not case_name:
-        return ("cannot parse case_name from {}/{}/requests.txt first line"
-                .format(root, case))
-
-    log_path = REPO_ROOT / root / case / user / (case_name + ".log")
+    log_name = derive_log_name(case)
+    log_path = REPO_ROOT / root / case / user / log_name
     if not log_path.exists():
-        return ("required log file missing: {}/{}/{}/{}.log"
-                .format(root, case, user, case_name))
+        return ("required log file missing: {}/{}/{}/{}"
+                .format(root, case, user, log_name))
 
     return validate_log(log_path, count_prompts(requests_path))
 
 
 def validate_testcase_folder(root, case):
     # type: (str, str) -> Optional[str]
-    """Validate that <root>/<case>/ contains requests.txt + at least one .v
-    and that case_name matches folder name."""
+    """Validate that <root>/<case>/ contains requests.txt and at least one .v."""
     case_dir = REPO_ROOT / root / case
-    requests_path = case_dir / "requests.txt"
-
-    if not requests_path.exists():
+    if not (case_dir / "requests.txt").exists():
         return "testcase folder {}/{} missing requests.txt".format(root, case)
 
     v_files = [p for p in case_dir.iterdir() if p.is_file() and p.suffix == ".v"]
     if not v_files:
         return "testcase folder {}/{} contains no .v netlist file".format(root, case)
-
-    case_name = parse_case_name(requests_path)
-    if not case_name:
-        return ("cannot parse case_name from {}/{}/requests.txt first line"
-                .format(root, case))
-
-    folder_without_prefix = case[len("case_"):] if case.startswith("case_") else case
-    if case_name != case and case_name != folder_without_prefix:
-        return ("case_name '{}' declared in requests.txt does not match "
-                "folder name '{}' (also tried '{}')"
-                .format(case_name, case, folder_without_prefix))
 
     return None
 

@@ -23,12 +23,10 @@
 任何人都可以新增、任何人都可以編輯。資料夾裡必須包含：
 
 - 至少一個 `*.v` netlist 檔（檔名不限）。
-- `requests.txt` — 第一行必須宣告 case_name，並與資料夾名一致：
-  ```
-  This is the beginning of testcase <case_name>. Please output a copy of the log into <case_name>.log.
-  ```
-  `<case_name>` 必須等於資料夾名。資料夾可選擇加 `case_` 前綴（例如 `case_foo/`，那 `<case_name>` 可以是 `case_foo` 或 `foo`）。
+- `requests.txt` — 你的 prompt，一行一題。內容自訂（比賽規則允許 prompt 引用任意的檔名）。
 - `README.md` — 選填。
+
+資料夾名自訂。`case_` 前綴是習慣但非必要（`tests/foo/` 和 `tests/case_foo/` 都接受）。
 
 ### 答案子資料夾 — `<root>/<case>/<your-github-username>/`
 
@@ -36,7 +34,10 @@
 - 必填檔案：`<case_name>.log` — 你的系統輸出，格式為 `#RESPONSE N` / `#END N` block。
 - 選填：任何輸出的 `*.v` 檔、任何 `submission.yaml`（執行資訊）。
 
-`<case_name>` 來自上層資料夾的 `requests.txt` 第一行宣告 — `official_testcase/test01/` 就是 `test01`，`tests/case_demo01/` 就是 `demo01`。
+預期的 log 檔名由上層資料夾名推導出來，去掉 `case_` 前綴：
+- `official_testcase/test01/` → `test01.log`
+- `tests/case_demo01/` → `demo01.log`
+- `tests/foo/` → `foo.log`
 
 ---
 
@@ -120,8 +121,8 @@ CI 對你的 PR 做結構檢查（資料夾名、必要檔案、log 格式），
 若 check fail 了，先讀錯誤訊息嘗試在本機修正。大多數錯誤都很單純：
 
 - 資料夾名與你的 GitHub login 不符 → 改名。
+- Log 檔名與預期不符 → 改名為 `<case_name>.log`（資料夾名去掉 `case_` 前綴）。
 - Log block ID 數量與 prompt 數量不符 → 重跑系統。
-- `requests.txt` 的 case_name 與資料夾名不符 → 改第一行。
 
 如果你嘗試過了，覺得問題出在 benchmark 端（CI 報錯但你沒動到那個檔案、環境問題、在本機無法重現等），請在 PR comment 裡 tag `@ZMYsamuel`。
 

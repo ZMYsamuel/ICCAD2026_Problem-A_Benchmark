@@ -23,12 +23,10 @@ Maintainer-owned. The netlist, `requests.txt`, `meta.yaml`, and `README.md` are 
 Anyone can create, anyone can edit. The folder must contain:
 
 - At least one `*.v` netlist file (any filename).
-- `requests.txt` — first line must declare the case_name, matching the folder name:
-  ```
-  This is the beginning of testcase <case_name>. Please output a copy of the log into <case_name>.log.
-  ```
-  `<case_name>` must equal the folder name. You may optionally use a `case_` prefix on the folder (e.g. folder `case_foo/` with `case_name` either `case_foo` or `foo`).
+- `requests.txt` — your prompts, one per line. Content is up to you (the contest spec lets prompts reference any filenames you like).
 - `README.md` — optional.
+
+Folder name is up to you. A `case_` prefix is conventional but not required (`tests/foo/` and `tests/case_foo/` are both accepted).
 
 ### Answer subfolder — `<root>/<case>/<your-github-username>/`
 
@@ -36,7 +34,10 @@ Anyone can create, anyone can edit. The folder must contain:
 - Required file: `<case_name>.log` — your system's captured output, formatted as `#RESPONSE N` / `#END N` blocks.
 - Optional: any output `*.v` files, any `submission.yaml` for run metadata.
 
-`<case_name>` is whatever's declared in the parent folder's `requests.txt` first line — for `official_testcase/test01/` it's `test01`, for `tests/case_demo01/` it's `demo01`.
+The expected log filename is derived from the parent folder name with any `case_` prefix stripped:
+- `official_testcase/test01/` → `test01.log`
+- `tests/case_demo01/` → `demo01.log`
+- `tests/foo/` → `foo.log`
 
 ---
 
@@ -120,8 +121,8 @@ CI runs a structural check on your PR (folder names, required files, log format)
 If the check fails, read the error message and try to fix it locally. Most failures are simple:
 
 - Folder name doesn't match your GitHub login → rename.
+- Log filename doesn't match the expected name → rename to `<case_name>.log` (folder name with any `case_` prefix stripped).
 - Log block IDs don't match prompt count → re-run the system.
-- `requests.txt` case_name doesn't match folder name → fix the first line.
 
 If you've tried and the error looks like a benchmark-side issue (a maintainer file CI flags that you didn't touch, an env problem, something that doesn't reproduce locally), ping `@ZMYsamuel` in the PR comments.
 
