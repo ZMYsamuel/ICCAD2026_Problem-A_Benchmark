@@ -7,6 +7,3 @@ Loaded gate-level Verilog from testcase/test04/test04.v successfully. Module: to
 #RESPONSE 3
 The maximum logic depth of the fanin cone of output `n3` is 14.
 #END 3
-#RESPONSE 4
-Design written to test04_out.v.
-#END 4
