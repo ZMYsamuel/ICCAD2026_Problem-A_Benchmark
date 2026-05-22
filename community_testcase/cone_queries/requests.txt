@@ -1,5 +1,5 @@
 This is the beginning of testcase cone_queries. Please output a copy of the log into cone_queries.log.
-Load design.v from the directory tests/case_cone_queries/.
+Load design.v from the directory community_testcase/cone_queries/.
 How many gates are in the fanin cone of out0?
 How many gates are in the fanin cone of out2?
 How many gates are in the fanin cone of out1?

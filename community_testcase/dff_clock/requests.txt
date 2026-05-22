@@ -1,5 +1,5 @@
 This is the beginning of testcase dff_clock. Please output a copy of the log into dff_clock.log.
-Load design.v from the directory tests/case_dff_clock/.
+Load design.v from the directory community_testcase/dff_clock/.
 List all DFF instances in the design.
 For DFF FF1, what is its clock signal and reset signal?
 What is the data input net of FF1?

@@ -1,5 +1,5 @@
 This is the beginning of testcase c17. Please output a copy of the log into c17.log.
-Load design.v from the directory tests/case_c17/.
+Load design.v from the directory community_testcase/c17/.
 Give me a netlist summary: module name, primary inputs, primary outputs, gate counts by type.
 Count all the gates in this design and report the total count broken down by gate type.
 What is the maximum logic depth from primary input N1 to primary output N22?

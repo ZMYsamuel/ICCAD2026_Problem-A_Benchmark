@@ -153,8 +153,8 @@ def main():
         case = parts[1]
 
         # Path depth tells us if this is a maintainer-level file or in a user folder.
-        # depth == 3: official_testcase/<case>/<file>     OR  tests/<case>/<file>
-        # depth >= 4: official_testcase/<case>/<user>/... OR  tests/<case>/<user>/...
+        # depth == 3: official_testcase/<case>/<file>     OR  community_testcase/<case>/<file>
+        # depth >= 4: official_testcase/<case>/<user>/... OR  community_testcase/<case>/<user>/...
         if len(parts) == 3:
             if root == OFFICIAL_ROOT:
                 print("ERROR: cannot modify maintainer-owned file in official_testcase: {}"

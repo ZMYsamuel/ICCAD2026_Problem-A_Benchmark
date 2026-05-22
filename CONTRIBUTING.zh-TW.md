@@ -42,9 +42,11 @@
 
 ## 完整流程
 
+下面每一步都有 **CLI 形式**（已列出）和 **GitHub-UI 形式** 兩種選擇。指令只是其中一種便利的方式，並非必須 — 用你最習慣的方法即可。真正重要的只有最終的資料夾結構與 log 格式。
+
 ### Step 1 — Fork 並 clone
 
-在 GitHub UI 上 fork 這個 repo，然後：
+在 GitHub UI 上 fork 這個 repo，然後可以選擇 clone 到本機，或直接在瀏覽器裡編輯檔案：
 
 ```bash
 git clone https://github.com/<your-github-username>/ICCAD2026_Problem-A_Benchmark.git
@@ -52,9 +54,11 @@ cd ICCAD2026_Problem-A_Benchmark
 git checkout -b submission/<your-github-username>
 ```
 
-### Step 2 — 產生你的輸出
+### Step 2 — 產生你的輸出 _(選填)_
 
-若是答案投稿，用 benchmark runner 對你的系統執行：
+你可以用任何習慣的方式產生 `.log` — 手動跑你的系統、用自己的 harness 餵 prompt、都沒問題。唯一的要求是輸出的 log 檔需要使用 `#RESPONSE N` / `#END N` block 格式，且 block 數量等於 `requests.txt` 中非註解行的數量。
+
+若想直接用現成的 runner，這個 repo 也有附：
 
 ```bash
 export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
@@ -74,6 +78,8 @@ Runner 會把輸出寫到 `results/run_<timestamp>/<case>/system.log`。`results
 若是新增 testcase 投稿，直接寫檔案就好。
 
 ### Step 3 — 把檔案放到對的位置
+
+你可以在 GitHub 網頁 UI 上直接拖拉上傳（在你的 fork 點 `Add file → Upload files`），或在本機操作：
 
 ```bash
 # 答案投稿（以官方 testcase 為例）
@@ -103,6 +109,8 @@ notes: |
 
 ### Step 4 — Commit 並 push
 
+如果在 Step 3 是透過瀏覽器上傳，GitHub 已經自動幫你 commit 了，可直接跳到下一步。若是在本機操作：
+
 ```bash
 git add <你新增的檔案>
 git commit -m "submission: <your-github-username> test01"
@@ -111,7 +119,7 @@ git push origin submission/<your-github-username>
 
 ### Step 5 — 開 pull request
 
-在你的 fork GitHub 頁面點擊 **Compare & pull request**，填好 PR template 後送出。
+在你的 fork GitHub 頁面點擊 **Compare & pull request**，填好 PR template 後送出。（這一步只能透過 GitHub UI，除非你有安裝 `gh` CLI。）
 
 ### Step 6 — 若 CI 失敗
 

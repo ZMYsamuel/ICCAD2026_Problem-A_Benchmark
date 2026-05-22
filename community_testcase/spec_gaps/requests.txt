@@ -1,5 +1,5 @@
 This is the beginning of testcase spec_gaps. Please output a copy of the log into spec_gaps.log.
-Load design.v from the directory tests/case_spec_gaps/.
+Load design.v from the directory community_testcase/spec_gaps/.
 Give me a netlist summary: module name, primary inputs, primary outputs, gate counts by type.
 What is the fanout of net hi? List every gate that hi drives.
 List all instance names that begin with the prefix BUF_.

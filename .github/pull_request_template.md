@@ -6,7 +6,7 @@ Tick all that apply:
 
 - [ ] Answer submission for **official** testcase(s): <!-- e.g. test01, test05 -->
 - [ ] Answer submission for **community** testcase(s): <!-- e.g. case_demo01 -->
-- [ ] New community testcase(s): <!-- e.g. tests/case_foo/ -->
+- [ ] New community testcase(s): <!-- e.g. community_testcase/<case_name>/ -->
 
 ## Checklist
 

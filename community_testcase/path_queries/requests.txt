@@ -1,5 +1,5 @@
 This is the beginning of testcase path_queries. Please output a copy of the log into path_queries.log.
-Load design.v from the directory tests/case_path_queries/.
+Load design.v from the directory community_testcase/path_queries/.
 Does every path from a to out0 pass through G_mid?
 Does every path from b to out0 pass through G_mid?
 Does every path from c to out0 pass through G_mid?

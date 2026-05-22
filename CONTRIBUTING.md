@@ -42,9 +42,11 @@ The expected log filename equals the parent case folder name:
 
 ## Full workflow
 
+Every step below has a **CLI form** (shown) and a **GitHub-UI form**. The commands are a convenience, not a requirement — feel free to use whichever you're more comfortable with. The only thing that matters is the final folder layout and log format.
+
 ### Step 1 — Fork and clone
 
-Fork this repo via the GitHub UI, then:
+Fork this repo via the GitHub UI, then either clone locally or just edit files in the browser:
 
 ```bash
 git clone https://github.com/<your-github-username>/ICCAD2026_Problem-A_Benchmark.git
@@ -52,9 +54,11 @@ cd ICCAD2026_Problem-A_Benchmark
 git checkout -b submission/<your-github-username>
 ```
 
-### Step 2 — Produce your output
+### Step 2 — Produce your output _(optional)_
 
-For an answer submission, run the benchmark runner against your system:
+You can produce your `.log` any way you like — running your system manually, piping prompts through your own harness, whatever fits your setup. The only requirement is that the resulting file uses the `#RESPONSE N` / `#END N` block format and has one block per non-comment line in `requests.txt`.
+
+If you'd like a turnkey runner, this repo ships one:
 
 ```bash
 export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
@@ -74,6 +78,8 @@ The runner writes output to `results/run_<timestamp>/<case>/system.log`. The `re
 For a new testcase contribution, just author the files directly.
 
 ### Step 3 — Place the files
+
+You can drag-and-drop files via the GitHub web UI (`Add file → Upload files` on your fork), or do it locally:
 
 ```bash
 # Answer submission (official example)
@@ -103,6 +109,8 @@ notes: |
 
 ### Step 4 — Commit and push
 
+If you uploaded files via the browser in Step 3, GitHub already committed them for you — skip this step. Otherwise:
+
 ```bash
 git add <the-files-you-added>
 git commit -m "submission: <your-github-username> test01"
@@ -111,7 +119,7 @@ git push origin submission/<your-github-username>
 
 ### Step 5 — Open a pull request
 
-On your fork's GitHub page, click **Compare & pull request**. Fill in the PR template and submit.
+On your fork's GitHub page, click **Compare & pull request**. Fill in the PR template and submit. (This step is GitHub-UI only — there's no CLI shortcut unless you have the `gh` CLI installed.)
 
 ### Step 6 — If CI fails
 

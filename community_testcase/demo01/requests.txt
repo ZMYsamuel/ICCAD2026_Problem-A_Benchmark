@@ -1,5 +1,5 @@
 This is the beginning of testcase demo01. Please output a copy of the log into demo01.log.
-Load design.v from the directory tests/case_demo01/.
+Load design.v from the directory community_testcase/demo01/.
 Give me a netlist summary: module name, primary inputs, primary outputs, gate counts by type, and DFF count.
 What is the maximum logic depth from input a to output out0?
 What is the maximum logic depth from input c to output out0?
