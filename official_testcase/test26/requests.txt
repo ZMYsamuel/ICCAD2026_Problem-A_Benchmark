@@ -1,0 +1,10 @@
+This is the beginning of a new testcase. The case name is test26.
+Please load the design from the file test26.v located in the directory testcase/test26/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Perform fanout optimization across the netlist with maximum fanout 4. Ensure functional equivalence is preserved.
+Reduce critical path depth through logic restructuring. Ensure functional equivalence is preserved.
+Remove all dangling gates and nets not connected to any primary output. Make sure nothing changes functionally.
+Convert the logic cone of n10 to use only NOR and NOT gates while preserving functional equivalence.
+Try to restructure n10 with a target depth of 4, preserving functionality. Report original if already optimal.
+Find all back-to-back inverter pairs and collapse them into a wire. Ensure functional equivalence is preserved.
+Please write the current design to the output file test26_out.v.

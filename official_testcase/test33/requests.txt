@@ -1,0 +1,20 @@
+This is the beginning of a new testcase. The case name is test33.
+Please load the design from the file test33.v located in the directory testcase/test33/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Find all paths of length 0 (direct wire connections from PI to PO).
+Convert every XNOR gate in this design to an equivalent NOR-only circuit. Ensure the design functionality does not change.
+How many NOR gates are now in the design after the XNOR-to-NOR conversion?
+Check if there are any dangling gates in this design that do not contribute to any primary output. Remove them if found. Ensure the design functionality does not change.
+How many dangling gates were removed?
+Try to restructure the logic cone of output n8 using only NAND and NOT gates while preserving functional equivalence. Ensure the design functionality does not change.
+How many NAND gates are now in the restructured cone of output n8?
+Check whether internal signals n55146 and n55104 are functionally equivalent for all input combinations. Report yes or no.
+List every path originating at primary input n3 and terminating at primary output n9.
+Does output n8 depend on input n1? Report yes or no.
+Attempt to reduce the depth of the cone of n8 to 4. If no improvement is possible, report the cone is already optimized.
+Check whether the current netlist is functionally equivalent to the netlist as last loaded from disk.
+Determine whether wire n55104 is a cut between any primary input and any primary output. Report yes or no.
+Please list all the primary inputs of this design with their bit widths.
+Try to merge any pairs of gates in this design that compute the same Boolean function on the same inputs (structural duplicates). Ensure the design functionality does not change.
+How many gates were merged as structural duplicates?
+Please write the current design to the output file test33_out.v.

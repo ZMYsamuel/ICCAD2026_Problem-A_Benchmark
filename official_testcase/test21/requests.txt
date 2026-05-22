@@ -1,0 +1,5 @@
+This is the beginning of a new testcase. The case name is test21.
+Please load the design from the file test21.v located in the directory testcase/test21/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Insert buffers wherever needed so that no gate drives more than 4 loads. Make sure nothing changes functionally.
+Please write the current design to the output file test21_out.v.

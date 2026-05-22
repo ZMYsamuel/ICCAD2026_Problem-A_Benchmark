@@ -91,7 +91,7 @@ class CaseResult:
 def discover_cases(source: str, cases: Optional[list[str]]) -> list[Path]:
     roots: list[tuple[str, Path]] = []
     if source in ("official", "all"):
-        official = REPO_ROOT / "private" / "official_0510"
+        official = REPO_ROOT / "official_testcase"
         if official.is_dir():
             roots.append(("official", official))
     if source in ("community", "personal", "all"):

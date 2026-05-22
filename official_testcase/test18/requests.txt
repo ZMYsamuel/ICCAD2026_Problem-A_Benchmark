@@ -1,0 +1,17 @@
+This is the beginning of a new testcase. The case name is test18.
+Please load the design from the file test18.v located in the directory testcase/test18/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Determine whether a combinational path from n0[0] to n12 exists that does not traverse node n1038.
+Verify whether a path connecting input n0[1] to output n13 exists while avoiding n1080.
+List every path originating at primary input n0[1] and terminating at primary output n13.
+Provide a complete enumeration of paths between n0[2] and n12.
+Compute the maximum logic depth from input n0[0] to output n12.
+Determine the longest combinational path depth from n0[1] to n13.
+Determine the number of gates driven by g0.
+Enumerate the immediate successors of gate g0.
+Compute the transitive fanin cone of output n12.
+Compute the transitive fanout cone of input n0[0].
+Determine whether signals n848 and n1080 are functionally equivalent.
+Verify that n1039 and n1046 produce identical logic values for all inputs.
+Check functional equivalence between internal signals n1035 and n1029.
+Please write the current design to the output file test18_out.v.

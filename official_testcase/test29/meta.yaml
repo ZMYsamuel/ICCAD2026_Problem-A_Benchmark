@@ -1,0 +1,51 @@
+schema_version: 2
+source: official_0510
+runtime:
+  netlist_mount:
+    source: test29.v
+    target: testcase/test29/test29.v
+prompts:
+  - id: 1
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 2
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 3
+    task_type: analysis
+    expected:
+      kind: gate_count
+  - id: 4
+    task_type: modification
+    expected:
+      kind: equivalence
+  - id: 5
+    task_type: optimization
+    expected:
+      kind: cost_improvement
+  - id: 6
+    task_type: analysis
+    expected:
+      kind: free_text
+  - id: 7
+    task_type: analysis
+    expected:
+      kind: free_text
+  - id: 8
+    task_type: optimization
+    expected:
+      kind: cost_improvement
+  - id: 9
+    task_type: optimization
+    expected:
+      kind: equivalence
+  - id: 10
+    task_type: optimization
+    expected:
+      kind: equivalence
+  - id: 11
+    task_type: basic
+    expected:
+      kind: ack

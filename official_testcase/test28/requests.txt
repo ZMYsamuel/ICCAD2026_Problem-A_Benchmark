@@ -1,0 +1,10 @@
+This is the beginning of a new testcase. The case name is test28.
+Please load the design from the file test28.v located in the directory testcase/test28/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Insert buffers wherever needed so that no gate drives more than 4 loads. Make sure nothing changes functionally.
+Optimize the logic depth of the design. Make sure nothing changes functionally.
+Sweep out dangling gates. Make sure nothing changes functionally.
+Reconstruct the entire netlist using only AND and NOT gates while preserving functional equivalence.
+Try to optimize n9 to at most 4 levels deep. Make sure nothing changes functionally.
+Find all back-to-back inverter pairs and collapse them into a wire. Ensure functional equivalence is preserved.
+Please write the current design to the output file test28_out.v.

@@ -1,0 +1,20 @@
+This is the beginning of a new testcase. The case name is test32.
+Please load the design from the file test32.v located in the directory testcase/test32/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Determine whether gate g0 lies on any maximum-depth path of the design. Report yes or no.
+Determine the number of primary inputs and outputs.
+List all register-to-register paths in this design through combinational logic.
+Try to replace all 2-input NAND gates that have one input tied to constant 1 with inverters. Ensure the design functionality does not change.
+How many NOT gates are currently in the design?
+Does every path from input n2 to output n12 pass through gate g0? Report yes or no.
+Rename wire n1214 to renamed_wire. Ensure functional equivalence is preserved.
+Verify functional equivalence between the current design and the original loaded netlist.
+What is the transitive fanout of primary input n0? List all gates reachable from n0.
+How many gates are in the logic cone of output n12?
+Check if there are any dangling gates in this design that do not contribute to any primary output. Remove them if found. Ensure the design functionality does not change.
+How many dangling gates were removed?
+Report any NAND gates with constant inputs (0 or 1) in this design.
+Simplify the reported NAND gates by propagating their constant inputs. Ensure the design functionality does not change.
+How many NAND gates were eliminated by constant propagation?
+Find all combinational paths from primary input n2 to primary output n12 and list each path showing the gates traversed.
+Please write the current design to the output file test32_out.v.

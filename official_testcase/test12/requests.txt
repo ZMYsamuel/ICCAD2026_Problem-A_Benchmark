@@ -1,0 +1,11 @@
+This is the beginning of a new testcase. The case name is test12.
+Please load the design from the file test12.v located in the directory testcase/test12/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Determine whether a combinational path from n24[0] to n26[0] exists that does not traverse node n86984.
+Verify whether a path connecting input n24[1] to output n26[1] exists while avoiding n87234.
+List every path originating at primary input n24[1] and terminating at primary output n26[1].
+Provide a complete enumeration of paths between n24[2] and n26[0].
+Compute the maximum logic depth from input n24[0] to output n26[0].
+Determine the longest combinational path depth from n24[1] to n26[1].
+Determine the number of gates driven by g0.
+Please write the current design to the output file test12_out.v.

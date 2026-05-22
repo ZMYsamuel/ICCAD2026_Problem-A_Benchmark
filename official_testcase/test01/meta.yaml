@@ -1,0 +1,19 @@
+schema_version: 2
+source: official_0510
+runtime:
+  netlist_mount:
+    source: test01.v
+    target: testcase/test01/test01.v
+prompts:
+  - id: 1
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 2
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 3
+    task_type: basic
+    expected:
+      kind: ack

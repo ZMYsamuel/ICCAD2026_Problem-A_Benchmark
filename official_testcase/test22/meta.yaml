@@ -1,0 +1,31 @@
+schema_version: 2
+source: official_0510
+runtime:
+  netlist_mount:
+    source: test22.v
+    target: testcase/test22/test22.v
+prompts:
+  - id: 1
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 2
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 3
+    task_type: analysis
+    expected:
+      kind: gate_count
+  - id: 4
+    task_type: modification
+    expected:
+      kind: equivalence
+  - id: 5
+    task_type: optimization
+    expected:
+      kind: cost_improvement
+  - id: 6
+    task_type: basic
+    expected:
+      kind: ack

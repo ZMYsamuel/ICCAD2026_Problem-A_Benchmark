@@ -1,0 +1,8 @@
+This is the beginning of a new testcase. The case name is test24.
+Please load the design from the file test24.v located in the directory testcase/test24/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Insert buffers wherever needed so that no gate in the design drives more than 4 loads. Ensure functional equivalence is preserved.
+Optimize the logic to minimize maximum path depth while preserving functionality. Ensure functional equivalence is preserved.
+Remove all dangling gates that do not contribute to any primary output. Ensure functional equivalence is preserved.
+Rename gate g0 to renamed_gate. Ensure functional equivalence is preserved.
+Please write the current design to the output file test24_out.v.

@@ -1,0 +1,20 @@
+This is the beginning of a new testcase. The case name is test37.
+Please load the design from the file test37.v located in the directory testcase/test37/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Report the number of each gate type in the cone of n8.
+Try to restructure the logic cone of output n8 using only NAND and NOT gates while preserving functional equivalence. Ensure the design functionality does not change.
+How many NAND gates are now in the restructured cone of output n8?
+Prune the netlist of unused gates. Make sure nothing changes functionally.
+Check whether the current netlist is functionally equivalent to the netlist as last loaded from disk.
+List all register-to-register paths in this design through combinational logic.
+How many primary inputs and primary outputs does this design have?
+List all primary outputs of this design with their bit widths.
+List all gates with one or more inputs tied to 1'b1.
+Try to restructure the logic cone of output n9 using only NOR and NOT gates while preserving functional equivalence. Ensure the design functionality does not change.
+How many NOR gates are now in the restructured cone of output n9?
+What Boolean function does output n8 compute? Express it in terms of the primary inputs.
+Check if there are any floating inputs or unconnected output ports in this design.
+How many floating signals were found?
+Report every gate connected to the output of g0.
+Check whether the function at n8 is symmetric with respect to inputs n3 and n4[0].
+Please write the current design to the output file test37_out.v.

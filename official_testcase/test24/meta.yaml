@@ -1,0 +1,39 @@
+schema_version: 2
+source: official_0510
+runtime:
+  netlist_mount:
+    source: test24.v
+    target: testcase/test24/test24.v
+prompts:
+  - id: 1
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 2
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 3
+    task_type: analysis
+    expected:
+      kind: gate_count
+  - id: 4
+    task_type: modification
+    expected:
+      kind: equivalence
+  - id: 5
+    task_type: optimization
+    expected:
+      kind: equivalence
+  - id: 6
+    task_type: analysis
+    expected:
+      kind: yes_no
+  - id: 7
+    task_type: modification
+    expected:
+      kind: equivalence
+  - id: 8
+    task_type: basic
+    expected:
+      kind: ack

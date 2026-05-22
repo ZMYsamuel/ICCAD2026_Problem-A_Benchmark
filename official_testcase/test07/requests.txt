@@ -1,0 +1,6 @@
+This is the beginning of a new testcase. The case name is test07.
+Please load the design from the file test07.v located in the directory testcase/test07/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Determine whether a combinational path from n0[0] to n5 exists that does not traverse node n95.
+Verify whether a path connecting input n0[1] to output n6 exists while avoiding n94.
+Please write the current design to the output file test07_out.v.

@@ -1,0 +1,87 @@
+schema_version: 2
+source: official_0510
+runtime:
+  netlist_mount:
+    source: test33.v
+    target: testcase/test33/test33.v
+prompts:
+  - id: 1
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 2
+    task_type: basic
+    expected:
+      kind: ack
+  - id: 3
+    task_type: analysis
+    expected:
+      kind: gate_count
+  - id: 4
+    task_type: analysis
+    expected:
+      kind: free_text
+  - id: 5
+    task_type: analysis
+    expected:
+      kind: yes_no
+  - id: 6
+    task_type: analysis
+    expected:
+      kind: number
+  - id: 7
+    task_type: analysis
+    expected:
+      kind: yes_no
+  - id: 8
+    task_type: analysis
+    expected:
+      kind: number
+  - id: 9
+    task_type: optimization
+    expected:
+      kind: equivalence
+  - id: 10
+    task_type: analysis
+    expected:
+      kind: number
+  - id: 11
+    task_type: analysis
+    expected:
+      kind: yes_no
+  - id: 12
+    task_type: analysis
+    expected:
+      kind: path_list
+  - id: 13
+    task_type: analysis
+    expected:
+      kind: yes_no
+  - id: 14
+    task_type: optimization
+    expected:
+      kind: cost_improvement
+  - id: 15
+    task_type: analysis
+    expected:
+      kind: yes_no
+  - id: 16
+    task_type: analysis
+    expected:
+      kind: yes_no
+  - id: 17
+    task_type: analysis
+    expected:
+      kind: signal_list
+  - id: 18
+    task_type: optimization
+    expected:
+      kind: cost_improvement
+  - id: 19
+    task_type: analysis
+    expected:
+      kind: number
+  - id: 20
+    task_type: basic
+    expected:
+      kind: ack

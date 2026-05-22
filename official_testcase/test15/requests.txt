@@ -1,0 +1,14 @@
+This is the beginning of a new testcase. The case name is test15.
+Please load the design from the file test15.v located in the directory testcase/test15/.
+Please count all the gates in this design and report the total count broken down by gate type (AND, OR, NOT, NAND, NOR, XOR, XNOR, BUF, DFF).
+Determine whether a combinational path from n0[0] to n3 exists that does not traverse node n207.
+Verify whether a path connecting input n0[1] to output n4 exists while avoiding n29.
+List every path originating at primary input n0[1] and terminating at primary output n4.
+Provide a complete enumeration of paths between n0[2] and n3.
+Compute the maximum logic depth from input n0[0] to output n3.
+Determine the longest combinational path depth from n0[1] to n4.
+Determine the number of gates driven by g0.
+Enumerate the immediate successors of gate g0.
+Compute the transitive fanin cone of output n3.
+Compute the transitive fanout cone of input n0[0].
+Please write the current design to the output file test15_out.v.

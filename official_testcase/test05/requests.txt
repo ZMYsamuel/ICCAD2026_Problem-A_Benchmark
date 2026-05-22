@@ -1,0 +1,4 @@
+This is the beginning of a new testcase. The case name is test05.
+Please load the design from the file test05.v located in the directory testcase/test05/.
+What is the fanout of primary input n5? List all gates that n5 drives directly.
+Please write the current design to the output file test05_out.v.
