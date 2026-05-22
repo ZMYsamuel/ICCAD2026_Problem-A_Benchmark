@@ -58,7 +58,7 @@ git checkout -b submission/<your-github-username>
 
 你可以用任何習慣的方式產生 `.log` — 手動跑你的系統、用自己的 harness 餵 prompt、都沒問題。唯一的要求是輸出的 log 檔需要使用 `#RESPONSE N` / `#END N` block 格式，且 block 數量等於 `requests.txt` 中非註解行的數量。
 
-也歡迎直接使用 repo 附的現成 runner：
+也歡迎直接使用 repo 附的現成 runner（若遇到問題可參 [FAQ](README.zh-TW.md#faq--常見問題) ）：
 
 ```bash
 # BENCH_SYSTEM_CMD 必須使用絕對路徑 — runner 在暫存目錄執行，相對路徑無法解析。
