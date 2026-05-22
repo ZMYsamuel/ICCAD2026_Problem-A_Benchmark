@@ -47,16 +47,22 @@ ICCAD2026_Problem-A_Benchmark/
 | Per-prompt timeout: 60 s for basic ops, 300 s for others | `runner/run_bench.py` enforces both; marks per-prompt `status: timeout` |
 | Testcase begins with `This is the beginning of testcase <name>. …` | First line of every `requests.txt` follows this pattern |
 
+## Requirements
+
+- **Python 3.7+** to run `runner/run_bench.py`. On the NTHU CAD workstation the default `python3` is 3.6 — use `python3.9` instead.
+- Your system under test and its dependencies (API keys, `LD_LIBRARY_PATH`, etc.) must be set up before invoking the runner. The runner inherits the shell environment.
+
 ## Quickstart — run the benchmark locally
 
 ```bash
-# 1. Set your system command (or use the BENCH_SYSTEM_CMD env var)
-export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
+# 1. Set your system command — must be an ABSOLUTE path because the runner
+#    executes each case inside a temporary workdir, not the repo root.
+export BENCH_SYSTEM_CMD="/absolute/path/to/your_system -config /absolute/path/to/llm_config.yaml"
 
-# 2. Run the runner
-python3 runner/run_bench.py --source official --cases test01      # one official case
-python3 runner/run_bench.py --source community --cases demo01     # one community case
-python3 runner/run_bench.py --source all                          # everything
+# 2. Run the runner (use python3.9 on the NTHU CAD workstation)
+python3.9 runner/run_bench.py --source official --cases test01      # one official case
+python3.9 runner/run_bench.py --source community --cases demo01     # one community case
+python3.9 runner/run_bench.py --source all                          # everything
 
 # Output goes to: results/run_<timestamp>/<case>/system.log
 # (results/ is gitignored — it never gets pushed)
@@ -82,6 +88,23 @@ The runner inherits the shell's environment. Make sure any API keys and `LD_LIBR
 See [CONTRIBUTING.md](CONTRIBUTING.md) for step-by-step instructions, including how to fork this repo and open a pull request.
 
 A GitHub Actions CI check validates the submission format automatically when you open a PR. The check is structural only — it verifies folder names, required files, and log format; it is not a correctness gate.
+
+## FAQ / Troubleshooting
+
+**`SyntaxError: future feature annotations is not defined`**
+Your `python3` is older than 3.7. On the NTHU CAD workstation, run with `python3.9` explicitly.
+
+**`spawn failed` or `No such file or directory` for your system binary**
+`BENCH_SYSTEM_CMD` must use an **absolute path**. The runner executes each case inside a temporary directory; relative paths will not resolve.
+
+**`[fatal] config not found: …`**
+Double-check the config filename passed to your system. A common mistake is writing `config.yaml` when the actual file is `llm_config.yaml`.
+
+**CI fails with "submission folder does not match PR author"**
+Your answer subfolder name must match your GitHub login exactly (case-sensitive). Rename the folder to match.
+
+**CI fails with "expected N response block(s)"**
+The number of `#RESPONSE`/`#END` blocks in your log must equal the number of non-comment lines in `requests.txt`. Re-run your system against the full testcase.
 
 ## Traditional Chinese
 

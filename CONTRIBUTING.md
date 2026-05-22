@@ -61,16 +61,19 @@ You can produce your `.log` any way you like — running your system manually, p
 If you'd like a turnkey runner, this repo ships one:
 
 ```bash
-export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
+# BENCH_SYSTEM_CMD must be an absolute path — the runner executes inside a
+# temporary workdir, so relative paths will not resolve.
+export BENCH_SYSTEM_CMD="/absolute/path/to/your_system -config /absolute/path/to/llm_config.yaml"
 
 # One official testcase
-python3 runner/run_bench.py --source official --cases test01
+# Note: use python3.9 on the NTHU CAD workstation (default python3 is 3.6, too old).
+python3.9 runner/run_bench.py --source official --cases test01
 
 # All official testcases
-python3 runner/run_bench.py --source official
+python3.9 runner/run_bench.py --source official
 
 # A community testcase
-python3 runner/run_bench.py --source community --cases demo01
+python3.9 runner/run_bench.py --source community --cases demo01
 ```
 
 The runner writes output to `results/run_<timestamp>/<case>/system.log`. The `results/` folder stays on your machine — it's gitignored.
