@@ -58,19 +58,21 @@ git checkout -b submission/<your-github-username>
 
 你可以用任何習慣的方式產生 `.log` — 手動跑你的系統、用自己的 harness 餵 prompt、都沒問題。唯一的要求是輸出的 log 檔需要使用 `#RESPONSE N` / `#END N` block 格式，且 block 數量等於 `requests.txt` 中非註解行的數量。
 
-若想直接用現成的 runner，這個 repo 也有附：
+若想直接用現成的 runner，這個 repo 也有附（詳見 [FAQ](README.zh-TW.md#faq--常見問題) 若遇到問題）：
 
 ```bash
-export BENCH_SYSTEM_CMD="./your_system --config llm_config.yaml"
+# BENCH_SYSTEM_CMD 必須使用絕對路徑 — runner 在暫存目錄執行，相對路徑無法解析。
+export BENCH_SYSTEM_CMD="/絕對路徑/your_system -config /絕對路徑/llm_config.yaml"
 
 # 單一官方 testcase
-python3 runner/run_bench.py --source official --cases test01
+# 注意：NTHU CAD 工作站請用 python3.9（預設 python3 是 3.6，版本不足）。
+python3.9 runner/run_bench.py --source official --cases test01
 
 # 全部官方 testcase
-python3 runner/run_bench.py --source official
+python3.9 runner/run_bench.py --source official
 
 # 社群 testcase
-python3 runner/run_bench.py --source community --cases demo01
+python3.9 runner/run_bench.py --source community --cases demo01
 ```
 
 Runner 會把輸出寫到 `results/run_<timestamp>/<case>/system.log`。`results/` 資料夾只留在你的本機 — 已在 `.gitignore` 裡。
