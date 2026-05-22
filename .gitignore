@@ -3,11 +3,10 @@ results/
 *.log
 *.stderr
 
-# ...except per-testcase reference answers, which are intentional content.
-!tests/**/golden.log
-
-# Submission logs inside official_testcase/ are intentional content.
+# ...except logs inside testcase folders — both legacy golden.log and
+# multi-user submission logs are intentional content.
 !official_testcase/**/*.log
+!tests/**/*.log
 
 # Pyverilog parser cache (regenerated on first import)
 parser.out
