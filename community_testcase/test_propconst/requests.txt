@@ -1,0 +1,9 @@
+This is the beginning of testcase test_propconst. Please output a copy of the log into test_propconst.log.
+Please load the design from the file test_propconst.v located in the directory community_testcase/test_propconst/.
+Report the current netlist summary: total combinational gate count broken down by gate type.
+List every gate whose input pins include a constant (0 or 1).
+Simplify the design by propagating constant inputs through every applicable gate. Ensure functional equivalence is preserved.
+How many gates were eliminated by constant propagation?
+Verify functional equivalence between the current design and the original loaded netlist.
+Report the new gate count broken down by gate type.
+Please write the current design to the output file test_propconst_out.v.
