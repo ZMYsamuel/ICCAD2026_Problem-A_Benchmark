@@ -53,28 +53,13 @@ def get_changed_files(base_sha):
 
 def get_mode_only_modified_files(base_sha):
     # type: (str) -> Set[str]
-    status_result = subprocess.run(
-        ["git", "diff", "--name-status", "--diff-filter=M", "{}...HEAD".format(base_sha)],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-        universal_newlines=True, check=True, cwd=str(REPO_ROOT),
-    )
-
-    modified_paths = set()  # type: Set[str]
-    for line in status_result.stdout.splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        parts = line.split("\t", 1)
-        if len(parts) == 2 and parts[0] == "M":
-            modified_paths.add(parts[1])
-
     numstat_result = subprocess.run(
         ["git", "diff", "--numstat", "--diff-filter=M", "{}...HEAD".format(base_sha)],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         universal_newlines=True, check=True, cwd=str(REPO_ROOT),
     )
 
-    mode_only_paths = set()  # type: Set[str]
+    mode_only_files = set()  # type: Set[str]
     for line in numstat_result.stdout.splitlines():
         line = line.strip()
         if not line:
@@ -83,10 +68,10 @@ def get_mode_only_modified_files(base_sha):
         if len(parts) != 3:
             continue
         added, deleted, path = parts
-        if added == "0" and deleted == "0" and path in modified_paths:
-            mode_only_paths.add(path)
+        if added == "0" and deleted == "0":
+            mode_only_files.add(path)
 
-    return mode_only_paths
+    return mode_only_files
 
 
 def count_prompts(requests_txt):
