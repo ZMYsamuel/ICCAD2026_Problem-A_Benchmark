@@ -53,22 +53,26 @@ def get_changed_files(base_sha):
 
 def get_mode_only_modified_files(base_sha):
     # type: (str) -> Set[str]
-    numstat_result = subprocess.run(
-        ["git", "diff", "--numstat", "--diff-filter=M", "{}...HEAD".format(base_sha)],
+    raw_result = subprocess.run(
+        ["git", "diff", "--raw", "--diff-filter=M", "{}...HEAD".format(base_sha)],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         universal_newlines=True, check=True, cwd=str(REPO_ROOT),
     )
 
     mode_only_files = set()  # type: Set[str]
-    for line in numstat_result.stdout.splitlines():
+    for line in raw_result.stdout.splitlines():
         line = line.strip()
         if not line:
             continue
-        parts = line.split("\t", 2)
-        if len(parts) != 3:
+        meta_and_path = line.split("\t", 1)
+        if len(meta_and_path) != 2:
             continue
-        added, deleted, path = parts
-        if added == "0" and deleted == "0":
+        meta, path = meta_and_path
+        fields = meta.split()
+        if len(fields) < 5:
+            continue
+        old_mode, new_mode, old_blob, new_blob = fields[0], fields[1], fields[2], fields[3]
+        if old_blob == new_blob and old_mode != new_mode:
             mode_only_files.add(path)
 
     return mode_only_files
