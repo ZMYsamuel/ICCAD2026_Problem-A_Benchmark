@@ -40,3 +40,6 @@ llm_config.yaml
 # Anything that ends in .env (defensive — no secret should ever be in repo)
 *.env
 .env*
+
+# Root-level convenience symlink (testcase -> official_testcase), never commit
+/testcase

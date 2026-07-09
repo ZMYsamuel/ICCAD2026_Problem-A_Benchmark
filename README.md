@@ -14,6 +14,18 @@ Each participant runs the testcases through their own system, then submits the c
 2. **Match the contest's I/O format exactly** (see §3 of the problem statement). Any system that passes these testcases is wired up correctly for the real evaluator.
 3. **Open enough to invite all teams and advisors.** Public, MIT-licensed, no NDA, no team-affiliation gating.
 
+## Testcase version
+
+`official_testcase/` currently tracks the official **`A_Testcase_20260706`** release
+(announced 2026-07-07). That release re-synthesized 6 netlists —
+**test27, test29, test31, test38, test39, test40** (module ports unchanged; internal
+structure, wire names, and gate counts changed; the old test29/test38 contained
+multi-driven nets and were not legal Verilog). All 40 prompts are unchanged since 0610.
+Submissions committed before 2026-07-09 were produced against the older netlists and
+are not comparable on those 6 testcases for netlist-dependent answers.
+`requests.txt`/`meta.yaml` still carry the 0510 prompt text for some cases — a refresh
+to the current official prompts is planned.
+
 ## Repository structure
 
 ```
