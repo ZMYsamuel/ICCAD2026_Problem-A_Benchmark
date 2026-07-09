@@ -10,8 +10,6 @@ List all register-to-register paths in this design through combinational logic.
 How many primary inputs and primary outputs does this design have?
 List all primary outputs of this design with their bit widths.
 List all gates with one or more inputs tied to 1'b1.
-Try to restructure the logic cone of output n9 using only NOR and NOT gates while preserving functional equivalence. Ensure the design functionality does not change.
-How many NOR gates are now in the restructured cone of output n9?
 What Boolean function does output n8 compute? Express it in terms of the primary inputs.
 Check if there are any floating inputs or unconnected output ports in this design.
 How many floating signals were found?

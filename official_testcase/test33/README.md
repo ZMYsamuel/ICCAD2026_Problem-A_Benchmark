@@ -18,12 +18,12 @@
 11. Check whether internal signals n55146 and n55104 are functionally equivalent for all input combinations. Report yes or no.
 12. List every path originating at primary input n3 and terminating at primary output n9.
 13. Does output n8 depend on input n1? Report yes or no.
-14. Attempt to reduce the depth of the cone of n8 to 4. If no improvement is possible, report the cone is already optimized.
-15. Check whether the current netlist is functionally equivalent to the netlist as last loaded from disk.
-16. Determine whether wire n55104 is a cut between any primary input and any primary output. Report yes or no.
-17. Please list all the primary inputs of this design with their bit widths.
-18. Try to merge any pairs of gates in this design that compute the same Boolean function on the same inputs (structural duplicates). Ensure the design functionality does not change.
-19. How many gates were merged as structural duplicates?
+14. Check whether the current netlist is functionally equivalent to the netlist as last loaded from disk.
+15. Determine whether wire n55104 is a cut between any primary input and any primary output. Report yes or no.
+16. Please list all the primary inputs of this design with their bit widths.
+17. Try to merge any pairs of gates in this design that compute the same Boolean function on the same inputs (structural duplicates). Ensure the design functionality does not change.
+18. How many gates were merged as structural duplicates?
+19. Optimize the depth of the cone of n8 while ensuring the cone of n8 maintains only NAND and NOT gates. Preserve functional equivalence. Report original if already optimal. The cost function is the depth of the cone of n8; smaller is better.
 20. Please write the current design to the output file test33_out.v.
 
 ## Notes

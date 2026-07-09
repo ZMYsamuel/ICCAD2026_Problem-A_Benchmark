@@ -1,5 +1,5 @@
 schema_version: 2
-source: official_0510
+source: official_0706
 runtime:
   netlist_mount:
     source: test23.v
@@ -26,10 +26,6 @@ prompts:
     expected:
       kind: cost_improvement
   - id: 6
-    task_type: analysis
-    expected:
-      kind: free_text
-  - id: 7
     task_type: basic
     expected:
       kind: ack

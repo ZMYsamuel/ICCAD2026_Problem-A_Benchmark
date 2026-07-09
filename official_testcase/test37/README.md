@@ -17,14 +17,12 @@
 10. How many primary inputs and primary outputs does this design have?
 11. List all primary outputs of this design with their bit widths.
 12. List all gates with one or more inputs tied to 1'b1.
-13. Try to restructure the logic cone of output n9 using only NOR and NOT gates while preserving functional equivalence. Ensure the design functionality does not change.
-14. How many NOR gates are now in the restructured cone of output n9?
-15. What Boolean function does output n8 compute? Express it in terms of the primary inputs.
-16. Check if there are any floating inputs or unconnected output ports in this design.
-17. How many floating signals were found?
-18. Report every gate connected to the output of g0.
-19. Check whether the function at n8 is symmetric with respect to inputs n3 and n4[0].
-20. Please write the current design to the output file test37_out.v.
+13. What Boolean function does output n8 compute? Express it in terms of the primary inputs.
+14. Check if there are any floating inputs or unconnected output ports in this design.
+15. How many floating signals were found?
+16. Report every gate connected to the output of g0.
+17. Check whether the function at n8 is symmetric with respect to inputs n3 and n4[0].
+18. Please write the current design to the output file test37_out.v.
 
 ## Notes
 

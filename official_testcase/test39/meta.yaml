@@ -1,5 +1,5 @@
 schema_version: 2
-source: official_0510
+source: official_0706
 runtime:
   netlist_mount:
     source: test39.v
@@ -22,9 +22,9 @@ prompts:
     expected:
       kind: free_text
   - id: 5
-    task_type: analysis
+    task_type: modification
     expected:
-      kind: yes_no
+      kind: equivalence
   - id: 6
     task_type: analysis
     expected:
@@ -34,13 +34,13 @@ prompts:
     expected:
       kind: number
   - id: 8
-    task_type: optimization
+    task_type: modification
     expected:
-      kind: cost_improvement
+      kind: equivalence
   - id: 9
     task_type: analysis
     expected:
-      kind: yes_no
+      kind: number
   - id: 10
     task_type: analysis
     expected:
@@ -62,9 +62,9 @@ prompts:
     expected:
       kind: free_text
   - id: 15
-    task_type: analysis
+    task_type: modification
     expected:
-      kind: yes_no
+      kind: equivalence
   - id: 16
     task_type: analysis
     expected:
@@ -74,9 +74,9 @@ prompts:
     expected:
       kind: signal_list
   - id: 18
-    task_type: analysis
+    task_type: modification
     expected:
-      kind: yes_no
+      kind: equivalence
   - id: 19
     task_type: analysis
     expected:

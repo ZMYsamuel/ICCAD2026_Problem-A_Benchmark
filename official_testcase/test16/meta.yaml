@@ -1,5 +1,5 @@
 schema_version: 2
-source: official_0510
+source: official_0706
 runtime:
   netlist_mount:
     source: test16.v
@@ -48,7 +48,7 @@ prompts:
   - id: 11
     task_type: analysis
     expected:
-      kind: number
+      kind: signal_list
   - id: 12
     task_type: analysis
     expected:

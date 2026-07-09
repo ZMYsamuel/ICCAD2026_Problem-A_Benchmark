@@ -1,5 +1,5 @@
 schema_version: 2
-source: official_0510
+source: official_0706
 runtime:
   netlist_mount:
     source: test26.v
@@ -18,30 +18,22 @@ prompts:
     expected:
       kind: gate_count
   - id: 4
-    task_type: analysis
+    task_type: modification
     expected:
-      kind: yes_no
+      kind: equivalence
   - id: 5
-    task_type: optimization
+    task_type: modification
     expected:
       kind: equivalence
   - id: 6
-    task_type: analysis
+    task_type: modification
     expected:
-      kind: free_text
+      kind: equivalence
   - id: 7
-    task_type: analysis
-    expected:
-      kind: signal_list
-  - id: 8
     task_type: optimization
     expected:
       kind: cost_improvement
-  - id: 9
-    task_type: optimization
-    expected:
-      kind: equivalence
-  - id: 10
+  - id: 8
     task_type: basic
     expected:
       kind: ack

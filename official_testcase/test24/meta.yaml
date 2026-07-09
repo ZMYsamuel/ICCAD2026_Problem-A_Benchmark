@@ -1,5 +1,5 @@
 schema_version: 2
-source: official_0510
+source: official_0706
 runtime:
   netlist_mount:
     source: test24.v
@@ -22,18 +22,14 @@ prompts:
     expected:
       kind: equivalence
   - id: 5
-    task_type: optimization
-    expected:
-      kind: equivalence
-  - id: 6
-    task_type: analysis
-    expected:
-      kind: yes_no
-  - id: 7
     task_type: modification
     expected:
       kind: equivalence
-  - id: 8
+  - id: 6
+    task_type: optimization
+    expected:
+      kind: cost_improvement
+  - id: 7
     task_type: basic
     expected:
       kind: ack
